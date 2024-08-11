@@ -1,22 +1,35 @@
 // src/Register.js
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import './Register.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/Authcontext';
 
 const Register = () => {
+  const { isAuthenticated, register } = useAuth();
+  const navigate = useNavigate();
   const [role, setRole] = useState('individual');
   const [formValues, setFormValues] = useState({
     email: '',
     firstName: '',
     lastName: '',
-    designation: '',
     linkedin: '',
     phone: '',
+    designation: '',
     companyName: ''
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleRoleChange = (selectedRole) => {
     setRole(selectedRole);
+    // Clear the fields that are not relevant for the selected role
+    if (selectedRole === 'individual') {
+      setFormValues({ ...formValues, designation: '', companyName: '' });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -26,23 +39,18 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/users/register', {
-        email: formValues.email,
-        role: role,
-        first_name: formValues.firstName,
-        last_name: formValues.lastName,
-        designation: formValues.designation,
-        linkedin: formValues.linkedin,
-        phone: formValues.phone,
-        company_name: formValues.companyName
-      });
-      console.log(response.data);
-      // Handle successful registration (e.g., show a success message, redirect to login page)
-    } catch (error) {
-      console.error('There was an error registering the user!', error);
-      // Handle registration error (e.g., show an error message)
-    }
+    const data = {
+      first_name: formValues.firstName,
+      last_name: formValues.lastName,
+      email: formValues.email,
+      phone_number: formValues.phone,
+      user_type: role,
+      linkedin_id: formValues.linkedin,
+      designation: role === 'organization' ? formValues.designation : '',
+      company_name: role === 'organization' ? formValues.companyName : ''
+    };
+    await register(data);
+    navigate('/login');
   };
 
   return (
@@ -76,14 +84,23 @@ const Register = () => {
           </button>
         </div>
         {role === 'organization' && (
-          <input
-            type="text"
-            name="companyName"
-            placeholder="Company Name"
-            value={formValues.companyName}
-            onChange={handleInputChange}
-            required
-          />
+          <>
+            <input
+              type="text"
+              name="companyName"
+              placeholder="Company Name"
+              value={formValues.companyName}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              type="text"
+              name="designation"
+              placeholder="Designation"
+              value={formValues.designation}
+              onChange={handleInputChange}
+            />
+          </>
         )}
         <input
           type="text"
@@ -100,13 +117,6 @@ const Register = () => {
           value={formValues.lastName}
           onChange={handleInputChange}
           required
-        />
-        <input
-          type="text"
-          name="designation"
-          placeholder="Designation"
-          value={formValues.designation}
-          onChange={handleInputChange}
         />
         <input
           type="url"

@@ -1,0 +1,75 @@
+.prospect-list-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.prospect-list-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.prospect-list-table th,
+.prospect-list-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.prospect-list-table th {
+    background-color: #B9B9B9;
+}
+
+.prospect-list-table td {
+    border: 1px solid #dddddd;
+}
+
+.prospect-list-table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.prospect-list-table tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.prospect-list-table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.prospect-list-table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.action-link {
+    margin-right: 20px;
+}
+
+.button-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    background-color: #007bff;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.button-link:hover {
+    background-color: #0056b3;
+}
+
+
+.action{
+    display: flex;
+    justify-content: space-around;
+}
