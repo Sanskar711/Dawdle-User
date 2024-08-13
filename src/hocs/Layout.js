@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
     if(!isAuthenticated){
         logout();
     }
-  })
+  },[isAuthenticated])
   return (
     <Fragment>
       {isAuthenticated && <Navbar />}

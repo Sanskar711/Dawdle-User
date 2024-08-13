@@ -1,22 +1,24 @@
 import axios from 'axios';
 import { getCookie } from './utils';  // Utility functions
-
+import Cookies from 'js-cookie'
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000',
   withCredentials: true,  // Ensure credentials are sent with requests
 });
-
+const getCSRFToken = () => {
+  return Cookies.get('csrftoken'); // Replace 'csrftoken' with the actual name of your CSRF cookie
+};
 // Add a request interceptor to include the token in headers
 api.interceptors.request.use((config) => {
   const token = getCookie('token');
-  const csrfToken = getCookie('csrftoken')
   // Do not include the Authorization header for specific endpoints
   if (token && !config.url.includes('/users/signin')) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  if (csrfToken) {
-    config.headers['X-CSRFToken'] = csrfToken;
-  }
+  // console.log(getCSRFToken())
+  config.headers['X-CSRFToken'] = getCSRFToken();
+  
+
   return config;
 }, (error) => {
   return Promise.reject(error);

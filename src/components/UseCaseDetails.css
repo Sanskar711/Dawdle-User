@@ -49,7 +49,10 @@
 .reference-links ul li a:hover {
     text-decoration: underline;
 }
-
+.reference-links-details{
+    display: flex;
+    flex-direction: column;
+}
 /* Responsive styling */
 @media (max-width: 768px) {
     .use-case-section {

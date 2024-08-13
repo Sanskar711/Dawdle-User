@@ -12,6 +12,7 @@ import ProspectList from './components/ProspectList';
 import UseCases from './components/UseCases';
 import Profile from './components/Profile';
 import UseCaseDetails from './components/UseCaseDetails';
+import BookMeeting from './components/BookMeeting';
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/product/:productId/options/prospectList" element ={<ProspectList/>}/>
           <Route path="/product/:productId/options/useCases" element ={<UseCases/>}/>
           <Route path="/product/:productId/options/useCases/:useCaseId" element ={<UseCaseDetails/>} />
+          <Route path="/product/:productId/options/book-meeting" element={<BookMeeting/>} />
           <Route path = "/profile" element={<Profile/>} />
         </Routes>
         </Layout>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
-import { getCookie } from '../context/utils';
 import api from '../context/api';
 import { useAuth } from '../context/Authcontext';
 
@@ -27,16 +26,13 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = getCookie('token');
     try {
-      await api.put(`/users/${profile.id}/profile/`, profile, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // console.log(userProfile)
+      await api.put(`/users/${userProfile.id}/profile/`, profile, {
       });
       alert('Profile updated successfully!');
       setIsEditing(false);
-      fetchUserProfile(); // Fetch updated profile
+      fetchUserProfile(); 
     } catch (error) {
       console.error('There was an error updating the profile!', error);
     }

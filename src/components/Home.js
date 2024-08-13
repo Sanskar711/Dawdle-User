@@ -10,7 +10,7 @@ const Home = () => {
   const [isVerified, setIsVerified] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated,checkAuth} = useAuth();
   useEffect(() => {
     const checkVerificationStatus = async () => {
       try {
@@ -23,6 +23,7 @@ const Home = () => {
         setLoading(false);
       }
     };
+    checkAuth();
     if(isAuthenticated){
       checkVerificationStatus();
     }

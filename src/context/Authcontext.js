@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
     try { 
       // console.log(userId)
       const response = await api.get(`/users/${userId}/profile/`);
+      // console.log(response.data);
       setUserProfile(response.data);
     } catch (error) {
       console.error('Failed to fetch user profile:', error);

@@ -45,7 +45,7 @@ const ProspectList = () => {
                             <td>{prospect.location}</td>
                             <td className='action'>
                                 <a href={`mailto:${prospect.email}`} className="button-link">Send Email</a>
-                                <a href={`/book-meeting/${prospect.id}`} className="button-link">Book Meeting</a>
+                                <a href={`/product/${productId}/options/book-meeting?prospectId=${prospect.id}`} className="button-link">Book Meeting</a>
                             </td>
                         </tr>
                     ))}
