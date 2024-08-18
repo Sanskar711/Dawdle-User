@@ -91,8 +91,14 @@ const BookMeeting = () => {
 
                 if (response.status === 201) {
                     setSelectedProspect(response.data.id); // Use the new prospect's ID
+                    const assignProspect = {
+                        product_prospects: [response.data.id]
+                    };
+                    const response2 = await api.get(`/users/products/${productId}/add_prospect/${response.data.id}/`);
+                    if (response2.status === 200){
                     setIsProspectModalOpen(false);
                     setIsQualifyingModalOpen(true);
+                    }
                 }
             } catch (error) {
                 console.error('Error creating prospect:', error);
@@ -119,6 +125,7 @@ const BookMeeting = () => {
                 poc_phone_number: prospectDetails.phoneNumber,
                 poc_designation: prospectDetails.designation,
                 other_relevant_details: prospectDetails.additionalInfo,
+                product_id: productId,
             };
             console.log(meetingData);
             const response = await api.post('/users/meetings/create/', meetingData, {

@@ -3,7 +3,7 @@ import './Dashboard.css'; // Import the CSS file for styling
 import api from '../context/api';
 import { useAuth } from '../context/Authcontext';
 import { useNavigate } from 'react-router-dom';
-// import Meetings from './Meeting/BookMeeting'; // Import the Meetings component
+import MeetingsCard from './Meetings';
 
 const Dashboard = () => {
   const { userProfile, isAuthenticated, fetchUserProfile } = useAuth();
@@ -60,7 +60,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* <Meetings />  Incorporate the Meetings component */}
+      { <MeetingsCard /> }
     </div>
   );
 };
