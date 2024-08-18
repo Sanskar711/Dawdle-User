@@ -1,18 +1,25 @@
 // src/components/OptionList.js
-import React from "react";
+import React ,{useEffect}from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // import api from '../context/api';  // Use the centralized Axios instance
 import "./OptionList.css";
-import aboutCompany from "../images/Office.png";
-import useCases from "../images/Project Management.png";
-import viewProspect from "../images/User Account.png";
-import calendar from "../images/Calendar Plus.png";
-import goBack from "../images/Group 20.png";
-import forward from "../images/Forward.png";
+import aboutCompany from "../../images/Office.png";
+import useCases from "../../images/Project Management.png";
+import viewProspect from "../../images/User Account.png";
+import calendar from "../../images/Calendar Plus.png";
+import goBack from "../../images/Group 20.png";
+import forward from "../../images/Forward.png";
+import { useAuth } from "../../context/Authcontext";
+
 const OptionList = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-
+  const { isAuthenticated} = useAuth();
+  useEffect(()=>{
+    if(!isAuthenticated){
+        navigate('/login')
+    }
+  },[isAuthenticated])
   // Get the dynamic 'id' parameter from the URL
   const handleAboutClick = () => {
     navigate(`/product/${productId}/options/productpage`);

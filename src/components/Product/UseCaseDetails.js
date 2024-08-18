@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import './UseCaseDetails.css';
-import goBack from '../images/Group 20.png';
+import goBack from '../../images/Group 20.png';
 import { useNavigate, useParams } from 'react-router-dom';
-import frame1 from '../images/frame.png';
-import frame2 from '../images/frame-2.png';
-import frame3 from '../images/frame-3.png';
-import teacher from '../images/Teacher.png';
-import links from '../images/icon.png';
-import api from '../context/api';
+import frame1 from '../../images/frame.png';
+import frame2 from '../../images/frame-2.png';
+import frame3 from '../../images/frame-3.png';
+import teacher from '../../images/Teacher.png';
+import links from '../../images/icon.png';
+import api from '../../context/api';
+import { useAuth } from '../../context/Authcontext';
 
 const UseCaseDetails = () => {
     const [useCaseDetails, setUseCaseDetails] = useState({});
     const navigate = useNavigate();
     const { productId, useCaseId } = useParams();
-
+    const { isAuthenticated} = useAuth();
+    useEffect(()=>{
+        if(!isAuthenticated){
+            navigate('/login')
+        }
+    },[isAuthenticated])
     useEffect(() => {
         api.get(`/users/product/${productId}/usecases/${useCaseId}/`)
             .then(response => {

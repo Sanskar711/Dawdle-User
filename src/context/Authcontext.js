@@ -104,9 +104,10 @@ export const AuthProvider = ({ children }) => {
       console.error('Error logging out:', error);
     }
   };
+  
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userProfile, login, verifyOtp, logout, register, checkAuth , userProfile, fetchUserProfile}}>
+    <AuthContext.Provider value={{ isAuthenticated, login, verifyOtp, logout, register, checkAuth , userProfile, fetchUserProfile,userId}}>
       {!loading && children}
     </AuthContext.Provider>
   );

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './UseCases.css';  // Import the CSS file
-import api from '../context/api';
+import api from '../../context/api';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import goBack from '../images/Group 20.png';
-import forward from '../images/Chevron Right.png';
+import goBack from '../../images/Group 20.png';
+import forward from '../../images/Chevron Right.png';
+import { useAuth } from '../../context/Authcontext';
 
 const UseCases = () => {
   const [useCases, setUseCases] = useState([]);
@@ -12,7 +13,12 @@ const UseCases = () => {
   const [error, setError] = useState(null);
   const { productId} = useParams();
   const navigate = useNavigate();
-
+  const { isAuthenticated } = useAuth();
+  useEffect(()=>{
+    if(!isAuthenticated){
+        navigate('/login')
+    }
+  },[isAuthenticated])
   useEffect(() => {
     const fetchUseCases = async () => {
       try {

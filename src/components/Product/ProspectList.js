@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './ProspectList.css'; // Assuming you create a CSS file for styling
-import goBack from '../images/Group 20.png';
-import api from '../context/api';
+import goBack from '../../images/Group 20.png';
+import api from '../../context/api';
+import { useAuth } from '../../context/Authcontext';
 
 const ProspectList = () => {
     const [prospects, setProspects] = useState([]);
     const navigate = useNavigate();
     const { productId } = useParams();
-
+    const { isAuthenticated } = useAuth();
+    useEffect(()=>{
+        if(!isAuthenticated){
+            navigate('/login')
+        }
+    },[isAuthenticated])
     useEffect(() => {
         // Fetch data from backend API
         api.get(`/users/product/${productId}/prospects/`) // Replace with your actual API endpoint
             .then(response => {
+                // console.log(response.data)
                 setProspects(response.data);
             })
             .catch(error => {
