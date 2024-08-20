@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [userProfile, setUserProfile] = useState({});
-
+  const [error, setError] = useState(null);  // Add error state
   const checkAuth = () => {
     const token = Cookies.get('token');
     if (!token) {
@@ -71,9 +71,17 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/users/signin/', { email });
       if (response.data.user_id) {
         setUserId(response.data.user_id);
+        setError(null);  // Reset error state if login is successful
+        return true;     // Indicate login was successful
       }
     } catch (error) {
       console.error('There was an error sending the OTP!', error);
+      if (error.response && error.response.status === 404) {
+        setError('User not found');  // Set error message if user not found
+      } else {
+        setError('An error occurred while sending the OTP');
+      }
+      return false;  // Indicate login failed
     }
   };
 
@@ -107,7 +115,7 @@ export const AuthProvider = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, verifyOtp, logout, register, checkAuth , userProfile, fetchUserProfile,userId}}>
+    <AuthContext.Provider value={{ isAuthenticated, login, verifyOtp, logout, register, checkAuth , userProfile, fetchUserProfile,userId,error,setError}}>
       {!loading && children}
     </AuthContext.Provider>
   );
