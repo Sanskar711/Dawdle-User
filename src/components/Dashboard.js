@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import './Dashboard.css'; // Import the CSS file for styling
+import './Dashboard.css';
+import dummyProfile from '../images/user_default.jpg';
 import api from '../context/api';
 import { useAuth } from '../context/Authcontext';
 import { useNavigate } from 'react-router-dom';
@@ -7,37 +8,55 @@ import MeetingsCard from './Meetings';
 
 const Dashboard = () => {
   const { userProfile, isAuthenticated, fetchUserProfile } = useAuth();
-  const [meetingsSet, setMeetingsSet] = useState(0);
+  const [meetingsScheduled, setMeetingsScheduled] = useState(0);
   const [dealsClosed, setDealsClosed] = useState(0);
-    const navigate = useNavigate();
+  const [dealsCompleted, setDealsCompleted] = useState(0);
+  const [selectedMetric, setSelectedMetric] = useState('scheduled');
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchUserProfile();
       fetchPerformanceMetrics();
-    }
-    else{
-        navigate('/login')
+    } else {
+      navigate('/login');
     }
   }, [isAuthenticated]);
 
   const fetchPerformanceMetrics = async () => {
     try {
-      const response = await api.get('/users/meetings/');  // Adjust the endpoint as necessary
+      const response = await api.get('/users/meetings/');
       const meetings = response.data;
-      const meetingsSetCount = meetings.length;
-      const dealsClosedCount = meetings.filter(meeting => meeting.status === 'completed').length;
-
-      setMeetingsSet(meetingsSetCount);
-      setDealsClosed(dealsClosedCount);
+      setMeetingsScheduled(meetings.filter(meeting => meeting.status === 'scheduled').length);
+      setDealsClosed(meetings.filter(meeting => meeting.status === 'closed').length);
+      setDealsCompleted(meetings.filter(meeting => meeting.status === 'completed').length);
     } catch (err) {
       console.error('Error fetching performance metrics:', err);
+    }
+  };
+
+  const handleMetricClick = (metric) => {
+    setSelectedMetric(metric);
+  };
+
+  const getMetricTitle = () => {
+    switch (selectedMetric) {
+      case 'scheduled':
+        return 'Scheduled Meetings';
+      case 'completed':
+        return 'Completed Meetings';
+      case 'closed':
+        return 'Closed Deals';
+      default:
+        return 'Meetings';
     }
   };
 
   return (
     <div className="dashboard-container">
       <div className="user-profile-dashboard">
-        <img src="https://placehold.it/120x120" alt="User Avatar" className="avatar" />
+        {/* User Profile Details */}
+        <img src={dummyProfile} alt="User Avatar" className="avatar" />
         <h2>{userProfile?.first_name || "Sam Rock"}</h2>
         <p>{userProfile?.email || "samrock@gmail.com"}</p>
         <p>{userProfile?.phone_number || "+1 123456789"}</p>
@@ -49,18 +68,22 @@ const Dashboard = () => {
         <h1 className="title">Performance Metrics</h1>
         <p className="subtitle">Track your sales performance data</p>
         <div className="metrics">
-          <div className="metric-item">
-            <span className="metric-number">{meetingsSet}</span>
-            <span className="metric-label">Meetings Set</span>
+          <div className="metric-item" onClick={() => handleMetricClick('scheduled')}>
+            <span className="metric-number">{meetingsScheduled}</span>
+            <span className="metric-label">Meetings Scheduled</span>
           </div>
-          <div className="metric-item">
+          <div className="metric-item" onClick={() => handleMetricClick('completed')}>
+            <span className="metric-number">{dealsCompleted}</span>
+            <span className="metric-label">Meetings Completed</span>
+          </div>
+          <div className="metric-item" onClick={() => handleMetricClick('closed')}>
             <span className="metric-number">{dealsClosed}</span>
             <span className="metric-label">Deals Closed</span>
           </div>
         </div>
       </div>
 
-      { <MeetingsCard /> }
+      <MeetingsCard filterBy={selectedMetric} title={getMetricTitle()} />
     </div>
   );
 };

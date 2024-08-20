@@ -1,20 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import './Meetings.css';  // Assuming you have a CSS file for styling
-import api from '../context/api';
+import './Meetings.css';
+import users from '../context/api';  // Replace api with users
 import { useNavigate } from 'react-router-dom';
 
-const MeetingsCard = () => {
+const MeetingsCard = ({ filterBy, title }) => {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [productNames, setProductNames] = useState({});
+  const [prospectNames, setProspectNames] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await api.get('/users/meetings/');
-        const sortedMeetings = sortMeetings(response.data);
+        const response = await users.get('/users/meetings/');
+        const filteredMeetings = response.data.filter(meeting => meeting.status === filterBy);
+        const sortedMeetings = sortMeetings(filteredMeetings);
         setMeetings(sortedMeetings);
+
+        // Extract product and prospect IDs
+        const productIds = [...new Set(filteredMeetings.map(meeting => meeting.product).filter(id => id !== null))];
+        const prospectIds = [...new Set(filteredMeetings.map(meeting => meeting.prospect).filter(id => id !== null))];
+
+        // Fetch and set product names
+        const productNamesMap = await fetchProductNames(productIds);
+        setProductNames(productNamesMap);
+
+        // Fetch and set prospect names
+        const prospectNamesMap = await fetchProspectNames(prospectIds);
+        setProspectNames(prospectNamesMap);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -23,21 +38,42 @@ const MeetingsCard = () => {
     };
 
     fetchMeetings();
-  }, []); // Empty dependency array means this runs once on mount
+  }, [filterBy]);
 
   const sortMeetings = (meetings) => {
-    return meetings.sort((a, b) => {
-      const statusOrder = ['scheduled', 'cancelled', 'completed'];
-      const statusComparison = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+    return meetings.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+  };
 
-      if (statusComparison !== 0) return statusComparison;
+  const fetchProductNames = async (productIds) => {
+    const productNamesMap = {};
+    await Promise.all(
+      productIds.map(async (productId) => {
+        try {
+          const response = await users.get(`users/product/${productId}/info/`);
+          productNamesMap[productId] = response.data.name;
+        } catch (err) {
+          console.error(`Error fetching product info for ID ${productId}:`, err);
+          productNamesMap[productId] = "Unknown Product";
+        }
+      })
+    );
+    return productNamesMap;
+  };
 
-      if (a.status === 'scheduled' && b.status === 'scheduled') {
-        return new Date(b.scheduled_at) - new Date(a.scheduled_at);
-      }
-
-      return 0;
-    });
+  const fetchProspectNames = async (prospectIds) => {
+    const prospectNamesMap = {};
+    await Promise.all(
+      prospectIds.map(async (prospectId) => {
+        try {
+          const response = await users.get(`users/prospect/${prospectId}/info/`);
+          prospectNamesMap[prospectId] = response.data.company_name;
+        } catch (err) {
+          console.error(`Error fetching prospect info for ID ${prospectId}:`, err);
+          prospectNamesMap[prospectId] = "Unknown Prospect";
+        }
+      })
+    );
+    return prospectNamesMap;
   };
 
   if (loading) {
@@ -54,25 +90,17 @@ const MeetingsCard = () => {
 
   return (
     <div className="meetings-container">
-      <h1 className="title">Meetings</h1>
+      <h1 className="title">{title}</h1>
       <div className="meetings-list">
         {meetings.map((meeting) => (
           <div key={meeting.id} className="meeting-item" onClick={() => handleMeetingDetails(meeting.id)}>
             <strong>
-              {meeting.prospect ? 
-                `Prospect ID: ${meeting.prospect}` : 
-                "No Prospect Information"
-              }
+              {meeting.prospect ? prospectNames[meeting.prospect] || "Loading..." : "No Prospect Information"}
             </strong>
-            <span>
-              {meeting.product ? 
-                meeting.product.name : 
-                "No Product Information"
-              }
-            </span>
             <span>{new Date(meeting.scheduled_at).toLocaleString()}</span>
-            <span>{meeting.status}</span>
-            <span>{`${meeting.poc_first_name} ${meeting.poc_last_name}`}</span>
+            <span>
+              {meeting.product ? productNames[meeting.product] || "Loading..." : "No Product Information"}
+            </span>
           </div>
         ))}
       </div>
