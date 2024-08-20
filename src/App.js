@@ -15,6 +15,8 @@ import UseCaseDetails from './components/Product/UseCaseDetails';
 import BookMeeting from './components/Meeting/BookMeeting';
 import ConfirmationPage from './components/Meeting/ConfirmationPage';
 import Dashboard from './components/Dashboard';
+import MeetingDetail from './components/MeetingDetail';
+import MeetingsCard from './components/Meetings';
 
 const App = () => {
 
@@ -62,6 +64,8 @@ const App = () => {
           <Route path = "/profile" element={<Profile/>} />
           <Route path ='/confirmation' element={<ConfirmationPage/>}/>
           <Route path = "/dashboard" element={<Dashboard/>} />
+          <Route path="/" element={<MeetingsCard filterBy="scheduled" title="Scheduled Meetings" />} />
+          <Route path="/meetings/:id" element={<MeetingDetail />} />
         </Routes>
         </Layout>
       </Router>
