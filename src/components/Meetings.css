@@ -1,0 +1,50 @@
+.meetings-container {
+    padding: 20px;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.meetings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add space between meeting items */
+}
+
+.meeting-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Add space between fields within a meeting item */
+}
+
+.meeting-item:hover {
+    background-color: #f9f9f9;
+}
+
+.loading, .error {
+    text-align: center;
+    font-size: 20px;
+}
+
+.error {
+    color: red;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .meeting-item {
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+}

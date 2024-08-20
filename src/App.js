@@ -5,16 +5,31 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from '../src/hocs/Layout'
-import OptionList from './components/OptionList';
+import OptionList from './components/Product/OptionList';
 import { AuthProvider } from './context/Authcontext'; 
-import ProductPage from './components/ProducPage';
-import ProspectList from './components/ProspectList';
-import UseCases from './components/UseCases';
+import ProductPage from './components/Product/ProducPage';
+import ProspectList from './components/Product/ProspectList';
+import UseCases from './components/Product/UseCases';
 import Profile from './components/Profile';
-import UseCaseDetails from './components/UseCaseDetails';
-import BookMeeting from './components/BookMeeting';
+import UseCaseDetails from './components/Product/UseCaseDetails';
+import BookMeeting from './components/Meeting/BookMeeting';
+import ConfirmationPage from './components/Meeting/ConfirmationPage';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
+
+  // useEffect(() => {
+  //   const initializeCSRF = async () => {
+  //     try {
+  //       await fetchCSRFToken();
+  //     } catch (error) {
+  //       console.error('Failed to initialize CSRF token:', error);
+  //     }
+  //   };
+
+  //   initializeCSRF();
+  // }, []);
+
   return (
     <AuthProvider>
       <Router>
@@ -30,14 +45,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
             }
-          /> */}
+          />
           <Route path="/product/:productId/options" element={<OptionList/>} />
           <Route path="/product/:productId/options/productpage" element={<ProductPage/>}/>
           <Route path="/product/:productId/options/prospectList" element ={<ProspectList/>}/>
@@ -45,6 +60,8 @@ const App = () => {
           <Route path="/product/:productId/options/useCases/:useCaseId" element ={<UseCaseDetails/>} />
           <Route path="/product/:productId/options/book-meeting" element={<BookMeeting/>} />
           <Route path = "/profile" element={<Profile/>} />
+          <Route path ='/confirmation' element={<ConfirmationPage/>}/>
+          <Route path = "/dashboard" element={<Dashboard/>} />
         </Routes>
         </Layout>
       </Router>

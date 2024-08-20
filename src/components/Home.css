@@ -1,81 +1,80 @@
-src/components/Home.css
-.home-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; 
-  min-height: 100vh;
-  background-color: #f9f9f9;
-}
-
-.loading {
-  font-size: 1.5rem;
-  color: #333;
-}
-
-/* src/components/VerificationInProgress.css */
-.verification-container {
+.book-meeting-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  padding: 1rem;
+  max-width: 500px;
+  margin: auto;
+  background-color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1, h2 {
+  margin: 0.5rem 0;
+  font-size: 1.5rem;
+  color: #333;
   text-align: center;
+}
+
+.prospect-information {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.prospect-select, .prospect-input {
+  margin-bottom: 1rem;
+}
+
+.prospect-select label, .prospect-input label {
+  font-size: 0.9rem;
   color: #555;
 }
 
-.verification-message {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+select, input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
-/* src/components/VerifiedHome.css */
-.product-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
+select:focus, input:focus {
+  border-color: #7B00FF;
+  outline: none;
 }
 
-.product-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 70vw;
-}
-
-.product-info {
-  display: flex;
-  align-items: center;
-}
-
-.product-info h3 {
-  margin: 0 1rem;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.product-info p {
-  margin: 0;
+.or-divider {
+  text-align: center;
   font-size: 0.9rem;
-  color: #777;
+  color: #aaa;
+  margin: 1rem 0;
 }
 
-.book-meeting-btn {
+.next-button {
+  width: 100%;
+  padding: 0.7rem;
   background-color: #7B00FF;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.book-meeting-btn:hover {
+.next-button:hover {
   background-color: #5754d4;
+}
+
+.go-back {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.go-back-icon {
+  width: 20px;
+  height: 20px;
 }

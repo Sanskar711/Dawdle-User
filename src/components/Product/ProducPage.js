@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './ProductPage.css';
-import api from '../context/api';
+import api from '../../context/api';
 import { useNavigate, useParams } from 'react-router-dom';
-import goBack from '../images/Group 20.png';
+import goBack from '../../images/Group 20.png';
+import { useAuth } from '../../context/Authcontext';
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { productId } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  useEffect(()=>{
+    if(!isAuthenticated){
+        navigate('/login')
+    }
+  },[isAuthenticated])
   useEffect(() => {
     const fetchProduct = async () => {
       try {

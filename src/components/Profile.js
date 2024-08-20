@@ -24,12 +24,15 @@ const Profile = () => {
     setIsEditing(true);
   };
 
+  const handleCancelClick = () => {
+    setProfile(userProfile); // Revert changes by resetting to the original profile
+    setIsEditing(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // console.log(userProfile)
-      await api.put(`/users/${userProfile.id}/profile/`, profile, {
-      });
+      await api.put(`/users/${userProfile.id}/update-profile/`, profile);
       alert('Profile updated successfully!');
       setIsEditing(false);
       fetchUserProfile(); 
@@ -41,7 +44,7 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <div className="profile-form">
-        <h2>Edit Profile</h2>
+        <h2>{isEditing ? 'Edit Profile' : 'Profile'}</h2>
         <form onSubmit={handleSubmit}>
           <label>
             First Name:
@@ -113,7 +116,7 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </label>
-          <label>
+          {/* <label>
             User Type:
             <input
               type="text"
@@ -122,9 +125,12 @@ const Profile = () => {
               onChange={handleChange}
               disabled={!isEditing}
             />
-          </label>
+          </label> */}
           {isEditing ? (
-            <button type="submit">Save</button>
+            <div className="profile-actions">
+              <button type="submit">Save</button>
+              <button type="button" onClick={handleCancelClick}>Cancel</button>
+            </div>
           ) : (
             <button type="button" onClick={handleEditClick}>Edit Profile</button>
           )}
