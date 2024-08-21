@@ -10,17 +10,20 @@ const ProspectList = () => {
     const navigate = useNavigate();
     const { productId } = useParams();
     const { isAuthenticated } = useAuth();
-    useEffect(()=>{
-        if(!isAuthenticated){
-            navigate('/login')
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
         }
-    },[isAuthenticated])
+    }, [isAuthenticated, navigate]);
+
     useEffect(() => {
         // Fetch data from backend API
-        api.get(`/users/product/${productId}/prospects/`) // Replace with your actual API endpoint
+        api.get(`/users/product/${productId}/prospects/`)
             .then(response => {
-                // console.log(response.data)
-                setProspects(response.data);
+                // Filter prospects to include only those that are open for a meeting
+                const openProspects = response.data.filter(prospect => prospect.status === 'open');
+                setProspects(openProspects);
             })
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);

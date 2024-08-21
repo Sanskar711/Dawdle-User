@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import './BookMeeting.css';
 import goBack from '../../images/Group 20.png';
-import api from '../../context/api';
+import users from '../../context/api';  // Replaced api with users
 import ProspectDetailsModal from './ProspectForm';
 import QualifyingQuestionsModal from './QualifyingQuestionModal';
 import { useAuth } from '../../context/Authcontext';
@@ -23,11 +23,12 @@ const BookMeeting = () => {
     const [prospectDetails, setProspectDetails] = useState(null);
 
     const { isAuthenticated } = useAuth();
-    useEffect(()=>{
-        if(!isAuthenticated){
-            navigate('/login')
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
         }
-    },[isAuthenticated])
+    }, [isAuthenticated]);
+
     // Retrieve prospectId from query parameters
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -38,9 +39,11 @@ const BookMeeting = () => {
     }, [location]);
 
     useEffect(() => {
-        api.get(`/users/product/${productId}/prospects/`)
+        users.get(`/users/product/${productId}/prospects/`)
             .then(response => {
-                setProspects(response.data);
+                // Filter prospects that are open for meeting
+                const openProspects = response.data.filter(prospect => prospect.status === 'open');
+                setProspects(openProspects);
             })
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);
@@ -49,7 +52,7 @@ const BookMeeting = () => {
 
     useEffect(() => {
         if (isProspectModalOpen) {
-            api.get(`/users/product/${productId}/usecases/`)
+            users.get(`/users/product/${productId}/usecases/`)
                 .then(response => {
                     setUseCases(response.data);
                 })
@@ -81,23 +84,22 @@ const BookMeeting = () => {
         } else if (prospectName) {
             // Create a new prospect
             try {
-                // console.log(details);
                 const newProspect = {
                     company_name: prospectName,
                     geography: details.geographicalLocation,
                 };
 
-                const response = await api.post(`/users/prospects/create/`, newProspect);
+                const response = await users.post(`/users/prospects/create/`, newProspect);
 
                 if (response.status === 201) {
                     setSelectedProspect(response.data.id); // Use the new prospect's ID
                     const assignProspect = {
                         product_prospects: [response.data.id]
                     };
-                    const response2 = await api.get(`/users/products/${productId}/add_prospect/${response.data.id}/`);
-                    if (response2.status === 200){
-                    setIsProspectModalOpen(false);
-                    setIsQualifyingModalOpen(true);
+                    const response2 = await users.get(`/users/products/${productId}/add_prospect/${response.data.id}/`);
+                    if (response2.status === 200) {
+                        setIsProspectModalOpen(false);
+                        setIsQualifyingModalOpen(true);
                     }
                 }
             } catch (error) {
@@ -112,7 +114,6 @@ const BookMeeting = () => {
     const handleQualifyingSubmit = async (responses) => {
         setIsQualifyingModalOpen(false);
         const csrfToken = Cookies.get('csrftoken');
-        console.log(prospectDetails)
         try {
             const meetingData = {
                 prospect_id: selectedProspect || prospectDetails.prospectId,
@@ -127,8 +128,8 @@ const BookMeeting = () => {
                 other_relevant_details: prospectDetails.additionalInfo,
                 product_id: productId,
             };
-            console.log(meetingData);
-            const response = await api.post('/users/meetings/create/', meetingData, {
+
+            const response = await users.post('/users/meetings/create/', meetingData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken,
@@ -136,7 +137,6 @@ const BookMeeting = () => {
             });
 
             if (response.status === 201) {
-                console.log(productName,prospectName,companyName)
                 navigate('/confirmation', {
                     state: {
                         prospect: selectedProspect || prospectName,
