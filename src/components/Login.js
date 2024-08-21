@@ -6,7 +6,7 @@ import { useAuth } from '../context/Authcontext'; // Correct path
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login, error, setError } = useAuth(); // Assuming setError is exposed from context
   const navigate = useNavigate();
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
@@ -18,17 +18,24 @@ const Login = () => {
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
+    if (error) {
+      setError(null); // Clear error when email input changes
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(email);
-    setIsOtpModalOpen(true);
+    login(email).then((loginSuccessful) => {
+      // console.log(loginSuccessful)
+      if (loginSuccessful) {
+        setIsOtpModalOpen(true);
+      }
+    });
   };
 
   const handleOtpResend = (e) => {
     login(email);
-    alert("OTP Resent")
+    alert("OTP Resent");
   };
 
   const handleClose = () => {
@@ -50,6 +57,7 @@ const Login = () => {
         />
         <button type="submit">Send OTP</button>
       </form>
+      {error && <div className="error-message">{error}</div>}
       <p>Don't have an account? <a href="/register">Register</a></p>
       {isOtpModalOpen && (
         <Otp
