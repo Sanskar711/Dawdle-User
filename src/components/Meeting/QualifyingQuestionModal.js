@@ -28,15 +28,7 @@ const QualifyingQuestionsModal = ({ isOpen, onClose, onSave, productId }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Pass the responses back to the parent component or handle the submission here
         onSave(responses);
-
-        // Open the Calendly URL in a new tab
-        window.open('https://calendly.com/your-calendly-url', '_blank');
-
-        // Redirect to the confirmation page
-        window.location.href = '/confirmation';
     };
 
     if (!isOpen) return null;

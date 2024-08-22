@@ -8,6 +8,8 @@
 h1 {
     font-size: 2em;
     margin-bottom: 20px;
+    text-align: center; /* Center-align the heading */
+    color: #333;
 }
 
 .prospect-list-table {
@@ -16,20 +18,26 @@ h1 {
     border-spacing: 0;
     border-radius: 10px;
     overflow: hidden;
+    background-color: #f9f9f9; /* Slight background color for table */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow for depth */
 }
 
 .prospect-list-table th,
 .prospect-list-table td {
-    padding: 10px;
+    padding: 12px; /* Slightly increase padding for better readability */
     text-align: left;
+    font-size: 0.9em;
 }
 
 .prospect-list-table th {
     background-color: #B9B9B9;
+    color: #fff; /* White text for better contrast on header */
+    font-weight: 600;
 }
 
 .prospect-list-table td {
     border: 1px solid #dddddd;
+    background-color: #fff; /* White background for table rows */
 }
 
 .prospect-list-table tr:first-child th:first-child {
@@ -48,8 +56,12 @@ h1 {
     border-bottom-right-radius: 10px;
 }
 
+.prospect-list-table tr:nth-child(even) td {
+    background-color: #f1f1f1; /* Alternate row colors for better readability */
+}
+
 .action-link {
-    margin-right: 20px;
+    margin-right: 10px; /* Reduce the margin to balance spacing */
 }
 
 .button-link {
@@ -62,14 +74,27 @@ h1 {
     cursor: pointer;
     margin-right: 10px;
     display: inline-block;
+    font-size: 0.85em; /* Adjust font size for button text */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .button-link:hover {
     background-color: #0056b3;
 }
 
-
-.action{
-    display: flex;
-    justify-content: space-around;
+/* Disabled button style */
+.button-link.disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+    color: #e0e0e0; /* Lighter text color for disabled buttons */
+    pointer-events: none; /* Disable pointer events */
 }
+
+.action {
+    display: flex;
+    justify-content: center; /* Center-align the action buttons */
+    align-items: center;
+    gap: 10px; /* Add spacing between buttons */
+}
+
+

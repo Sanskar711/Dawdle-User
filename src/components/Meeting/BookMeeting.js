@@ -27,7 +27,7 @@ const BookMeeting = () => {
         if (!isAuthenticated) {
             navigate('/login');
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, navigate]);
 
     // Retrieve prospectId from query parameters
     useEffect(() => {
@@ -114,6 +114,7 @@ const BookMeeting = () => {
     const handleQualifyingSubmit = async (responses) => {
         setIsQualifyingModalOpen(false);
         const csrfToken = Cookies.get('csrftoken');
+        
         try {
             const meetingData = {
                 prospect_id: selectedProspect || prospectDetails.prospectId,
@@ -137,14 +138,30 @@ const BookMeeting = () => {
             });
 
             if (response.status === 201) {
-                navigate('/confirmation', {
-                    state: {
-                        prospect: selectedProspect || prospectName,
-                        productName,
-                        companyName,
-                        responses,
-                    },
-                });
+                // Fetch the product info to get the Calendly link
+                const productResponse = await users.get(`/users/product/${productId}/info/`);
+                if (productResponse.status === 200) {
+                    const { client_cal_link } = productResponse.data;
+
+                    // Redirect to the Calendly link in a new tab
+                    if (client_cal_link) {
+                        window.open(client_cal_link, '_blank');
+                    } else {
+                        alert('Calendly link not available.');
+                    }
+
+                    // Navigate to the confirmation page
+                    navigate('/confirmation', {
+                        state: {
+                            prospect: selectedProspect || prospectName,
+                            productName,
+                            companyName,
+                            responses,
+                        },
+                    });
+                } else {
+                    alert('Failed to fetch product information. Please try again.');
+                }
             } else {
                 alert('There was an error scheduling the meeting. Please try again.');
             }

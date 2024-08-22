@@ -21,9 +21,7 @@ const ProspectList = () => {
         // Fetch data from backend API
         api.get(`/users/product/${productId}/prospects/`)
             .then(response => {
-                // Filter prospects to include only those that are open for a meeting
-                const openProspects = response.data.filter(prospect => prospect.status === 'open');
-                setProspects(openProspects);
+                setProspects(response.data);
             })
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);
@@ -54,8 +52,21 @@ const ProspectList = () => {
                             <td>{prospect.designation}</td>
                             <td>{prospect.location}</td>
                             <td className='action'>
-                                <a href={`mailto:${prospect.email}`} className="button-link">Send Email</a>
-                                <a href={`/product/${productId}/options/book-meeting?prospectId=${prospect.id}`} className="button-link">Book Meeting</a>
+                                {/* Disable and grey out the buttons if the status is not 'open' */}
+                                <a
+                                    href={`mailto:${prospect.email}`}
+                                    className={`button-link ${prospect.status !== 'open' ? 'disabled' : ''}`}
+                                    onClick={prospect.status !== 'open' ? (e) => e.preventDefault() : null}
+                                >
+                                    Send Email
+                                </a>
+                                <a
+                                    href={`/product/${productId}/options/book-meeting?prospectId=${prospect.id}`}
+                                    className={`button-link ${prospect.status !== 'open' ? 'disabled' : ''}`}
+                                    onClick={prospect.status !== 'open' ? (e) => e.preventDefault() : null}
+                                >
+                                    Book Meeting
+                                </a>
                             </td>
                         </tr>
                     ))}
