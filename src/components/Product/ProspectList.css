@@ -1,5 +1,5 @@
 .prospect-list-container {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
@@ -8,7 +8,7 @@
 h1 {
     font-size: 2em;
     margin-bottom: 20px;
-    text-align: center; /* Center-align the heading */
+    text-align: center;
     color: #333;
 }
 
@@ -18,26 +18,27 @@ h1 {
     border-spacing: 0;
     border-radius: 10px;
     overflow: hidden;
-    background-color: #f9f9f9; /* Slight background color for table */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add slight shadow for depth */
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 0.9em;
 }
 
 .prospect-list-table th,
 .prospect-list-table td {
-    padding: 12px; /* Slightly increase padding for better readability */
+    padding: 12px;
     text-align: left;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
 .prospect-list-table th {
     background-color: #B9B9B9;
-    color: #fff; /* White text for better contrast on header */
+    color: #fff;
     font-weight: 600;
 }
 
 .prospect-list-table td {
     border: 1px solid #dddddd;
-    background-color: #fff; /* White background for table rows */
+    background-color: #fff;
 }
 
 .prospect-list-table tr:first-child th:first-child {
@@ -57,11 +58,11 @@ h1 {
 }
 
 .prospect-list-table tr:nth-child(even) td {
-    background-color: #f1f1f1; /* Alternate row colors for better readability */
+    background-color: #f1f1f1;
 }
 
 .action-link {
-    margin-right: 10px; /* Reduce the margin to balance spacing */
+    margin-right: 10px;
 }
 
 .button-link {
@@ -74,27 +75,161 @@ h1 {
     cursor: pointer;
     margin-right: 10px;
     display: inline-block;
-    font-size: 0.85em; /* Adjust font size for button text */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    font-size: 0.85em;
+    transition: background-color 0.3s ease;
 }
 
 .button-link:hover {
     background-color: #0056b3;
 }
 
-/* Disabled button style */
 .button-link.disabled {
     background-color: #b0b0b0;
     cursor: not-allowed;
-    color: #e0e0e0; /* Lighter text color for disabled buttons */
-    pointer-events: none; /* Disable pointer events */
+    color: #e0e0e0;
+    pointer-events: none;
 }
 
 .action {
     display: flex;
-    justify-content: center; /* Center-align the action buttons */
+    justify-content: center;
     align-items: center;
-    gap: 10px; /* Add spacing between buttons */
+    gap: 10px;
 }
 
+.form-group {
+    margin-bottom: 20px;
+}
 
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.use-cases {
+    margin-bottom: 20px;
+}
+
+.use-case-table {
+    display: table;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.use-case-row {
+    display: table-row;
+}
+
+.use-case-checkbox, .use-case-label {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 5px 10px;
+}
+
+.use-case-checkbox {
+    width: 5%;
+}
+
+.use-case-label {
+    width: 95%;
+    padding-left: 10px;
+    font-size: 0.9em;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .prospect-list-table th,
+    .prospect-list-table td {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+
+    .button-link {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    .form-group label {
+        font-size: 0.9em;
+    }
+
+    .submit-button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .prospect-list-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    .prospect-list-table {
+        font-size: 0.8em;
+    }
+
+    .prospect-list-table th,
+    .prospect-list-table td {
+        padding: 8px;
+        font-size: 0.75em;
+    }
+
+    .button-link {
+        padding: 5px 10px;
+        font-size: 0.75em;
+    }
+
+    .action {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .use-case-options {
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 0.8em;
+    }
+
+    .submit-button {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+}

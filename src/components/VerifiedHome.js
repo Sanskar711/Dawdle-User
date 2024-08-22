@@ -5,17 +5,19 @@ import api from '../context/api';  // Use the centralized Axios instance
 import Arrow from '../images/Arrow.png';
 import CalendarIcon from '../images/calendar-icon.png'; // Make sure to update the path to the correct location
 import placeholder from '../images/Placeholder.png';  // Placeholder image
+import BookingModal from './BookingModal';
 
 const VerifiedHome = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/users/user-products/')
       .then(response => {
-        // console.log(response.data);
         setProducts(response.data);
         setLoading(false);
       })
@@ -24,14 +26,31 @@ const VerifiedHome = () => {
         setLoading(false);
       });
   }, []);
-  const handleBookMeeting = (id,productName,companyName) => {
-    navigate(`/product/${id}/options/book-meeting`, {
-      state: {
-          productName: productName,  // Replace with actual product name
-          companyName: companyName,  // Replace with actual company name
-      },
-  });
+
+  const handleBookMeeting = (product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
   };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
+
+  const handleModalAction = (action) => {
+    if (action === 'check') {
+      navigate(`/product/${selectedProduct.id}/icp-qualifying-questions`);
+    } else {
+      navigate(`/product/${selectedProduct.id}/options/book-meeting`, {
+        state: {
+          productName: selectedProduct.name,
+          companyName: selectedProduct.client_name,
+        },
+      });
+    }
+    handleModalClose();
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -55,7 +74,10 @@ const VerifiedHome = () => {
             </div>
           </div>
           <div className="button-group">
-            <button className="book-meeting-btn" onClick={()=>handleBookMeeting(product.id,product.name,product.client_name)}>
+            <button 
+              className="book-meeting-btn" 
+              onClick={() => handleBookMeeting(product)}
+            >
               <img src={CalendarIcon} alt="calendar" className="icon" />
               Book Meeting
             </button>
@@ -68,6 +90,13 @@ const VerifiedHome = () => {
           </div>
         </div>
       ))}
+      {showModal && (
+        <BookingModal 
+          onClose={handleModalClose} 
+          onAction={handleModalAction} 
+          productName={selectedProduct?.name}
+        />
+      )}
     </div>
   );
 };

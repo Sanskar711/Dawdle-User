@@ -17,6 +17,7 @@ import ConfirmationPage from './components/Meeting/ConfirmationPage';
 import Dashboard from './components/Dashboard';
 import MeetingDetail from './components/MeetingDetail';
 import MeetingsCard from './components/Meetings';
+import ICPQualifyingQuestions from './components/ICPQuestions';
 
 const App = () => {
 
@@ -66,6 +67,7 @@ const App = () => {
           <Route path = "/dashboard" element={<Dashboard/>} />
           <Route path="/" element={<MeetingsCard filterBy="scheduled" title="Scheduled Meetings" />} />
           <Route path="/meetings/:id" element={<MeetingDetail />} />
+          <Route path="/product/:productId/icp-qualifying-questions" element={<ICPQualifyingQuestions />} />
         </Routes>
         </Layout>
       </Router>

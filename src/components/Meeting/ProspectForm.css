@@ -1,18 +1,18 @@
 .modal-container {
     background: white;
-    padding: 1.5rem; /* Slightly reduce padding for a more compact modal */
+    padding: 1.5rem;
     border-radius: 8px;
     width: 400px;
     max-width: 90%;
-    max-height: 80vh; /* Set a maximum height for the modal */
-    overflow-y: auto; /* Make the modal scrollable if content overflows */
+    max-height: 80vh;
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
     .modal-container {
-        width: 80%; /* Slightly reduce width on smaller screens */
+        width: 80%;
         padding: 1.2rem;
     }
 }
@@ -76,10 +76,17 @@
 }
 
 .checkbox-group {
-    display: flex;
-    flex-direction: column;
+    display: table;
+    width: 100%;
 }
 
 .checkbox-item {
-    margin-bottom: 8px;
+    display: table-row;
+}
+
+.checkbox-item label,
+.checkbox-item input {
+    display: table-cell;
+    padding: 5px 10px;
+    vertical-align: middle;
 }
