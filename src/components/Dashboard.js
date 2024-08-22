@@ -60,8 +60,8 @@ const Dashboard = () => {
         <h2>{userProfile?.first_name || "Sam Rock"}</h2>
         <p>{userProfile?.email || "samrock@gmail.com"}</p>
         <p>{userProfile?.phone_number || "+1 123456789"}</p>
-        <p>{userProfile?.designation || "Sales Executive"}</p>
-        <p>{userProfile?.company || "ABCCo"}</p>
+        <p>{userProfile?.designation || ""}</p>
+        <p>{userProfile?.company || ""}</p>
       </div>
 
       <div className="performance-metrics">

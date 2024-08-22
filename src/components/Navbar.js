@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../images/logo.png';
 import './Navbar.css';
 import { useAuth } from '../context/Authcontext';
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for the mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { logout , userProfile, isAuthenticated,fetchUserProfile} = useAuth();
+  const { logout, userProfile, isAuthenticated, fetchUserProfile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current route
+  const [searchTerm, setSearchTerm] = useState("");
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -42,12 +44,24 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dropdownOpen]);
-  useEffect(()=>{
-    if(isAuthenticated){
+
+  useEffect(() => {
+    if (isAuthenticated) {
       fetchUserProfile();
       return;
     }
-  },[isAuthenticated])
+  }, [isAuthenticated]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    // Navigate to search results or call a search function
+    navigate(`/home?search=${searchTerm}`);
+  };
+
   return (
     <nav className="navbar">
       <div className="logo">
@@ -66,9 +80,20 @@ const Navbar = () => {
           <NavLink className="nav-link" exact to='/dashboard' activeClassName="active">Dashboard</NavLink>
         </li>
       </ul>
-      <div className="search-container">
-        <input type="text" placeholder="Search Products" className="search-input" aria-label="Search Products" />
-      </div>
+      {location.pathname === '/home' && ( // Render search bar only on home route
+        <div className="search-container">
+          <form onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              placeholder="Search Products"
+              className="search-input"
+              aria-label="Search Products"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </form>
+        </div>
+      )}
       <div className="user-profile" onClick={toggleDropdown} ref={dropdownRef}>
         <span className="user-name">{userProfile.first_name}</span>
         <div className={`dropdown-icon ${dropdownOpen ? 'open' : ''}`} aria-hidden="true">▼</div>

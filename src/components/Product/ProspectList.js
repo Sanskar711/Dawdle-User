@@ -8,9 +8,10 @@ import Modal from './Modal';
 
 const ProspectList = () => {
     const [prospects, setProspects] = useState([]);
+    const [filteredProspects, setFilteredProspects] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [loading, setLoading] = useState(false);  // Loading state
-    const [flashMessage, setFlashMessage] = useState('');  // Flash message state
+    const [loading, setLoading] = useState(false);
+    const [flashMessage, setFlashMessage] = useState('');
     const [selectedProspect, setSelectedProspect] = useState(null);
     const [emailData, setEmailData] = useState({
         email_subject: '',
@@ -20,10 +21,12 @@ const ProspectList = () => {
         poc_email: '',
         poc_designation: '',
     });
+    const [searchName, setSearchName] = useState('');
+    const [searchLocation, setSearchLocation] = useState('');
 
     const navigate = useNavigate();
     const { productId } = useParams();
-    const { isAuthenticated, userId } = useAuth();  // Use userId from useAuth
+    const { isAuthenticated, userId } = useAuth();
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -35,11 +38,20 @@ const ProspectList = () => {
         api.get(`/users/product/${productId}/prospects/`)
             .then(response => {
                 setProspects(response.data);
+                setFilteredProspects(response.data);
             })
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);
             });
     }, [productId]);
+
+    useEffect(() => {
+        const filtered = prospects.filter(prospect =>
+            prospect.company_name.toLowerCase().includes(searchName.toLowerCase()) &&
+            prospect.geography.toLowerCase().includes(searchLocation.toLowerCase())
+        );
+        setFilteredProspects(filtered);
+    }, [searchName, searchLocation, prospects]);
 
     const openModal = (prospect) => {
         setSelectedProspect(prospect);
@@ -63,32 +75,39 @@ const ProspectList = () => {
         setEmailData({ ...emailData, [e.target.name]: e.target.value });
     };
 
+    const handleSearchChange = (e) => {
+        if (e.target.name === 'searchName') {
+            setSearchName(e.target.value);
+        } else if (e.target.name === 'searchLocation') {
+            setSearchLocation(e.target.value);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        setLoading(true);  // Start loading
+        setLoading(true);
 
         const emailRequestData = {
-            user_id: userId,  // Use userId from useAuth
+            user_id: userId,
             prospect_id: selectedProspect.id,
             product_id: productId,
             ...emailData,
         };
-        console.log(emailRequestData);
 
         api.post('/users/email-request/', emailRequestData)
             .then(response => {
                 console.log('Email request sent successfully:', response.data);
                 setFlashMessage('Email sent successfully!');
-                setTimeout(() => setFlashMessage(''), 3000);  // Clear message after 3 seconds
+                setTimeout(() => setFlashMessage(''), 3000);
                 closeModal();
             })
             .catch(error => {
                 console.error('There was an error sending the email request:', error);
                 setFlashMessage('Failed to send email.');
-                setTimeout(() => setFlashMessage(''), 3000);  // Clear message after 3 seconds
+                setTimeout(() => setFlashMessage(''), 3000);
             })
             .finally(() => {
-                setLoading(false);  // Stop loading
+                setLoading(false);
             });
     };
 
@@ -99,26 +118,44 @@ const ProspectList = () => {
             </button>
             <h1>Prospect List</h1>
 
-            {/* Flash message */}
             {flashMessage && <div className="flash-message">{flashMessage}</div>}
 
             <table className="prospect-list-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Domain</th>
-                        <th>Designation</th>
                         <th>Location</th>
                         <th>Action</th>
                     </tr>
+                    <tr>
+                        <th>
+                            <input
+                                type="text"
+                                name="searchName"
+                                value={searchName}
+                                onChange={handleSearchChange}
+                                placeholder="Search by Name"
+                                className="search-input"
+                            />
+                        </th>
+                        <th>
+                            <input
+                                type="text"
+                                name="searchLocation"
+                                value={searchLocation}
+                                onChange={handleSearchChange}
+                                placeholder="Search by Location"
+                                className="search-input"
+                            />
+                        </th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {prospects.map((prospect, index) => (
+                    {filteredProspects.map((prospect, index) => (
                         <tr key={index}>
                             <td>{prospect.company_name}</td>
-                            <td>{prospect.domain}</td>
-                            <td>{prospect.designation}</td>
-                            <td>{prospect.location}</td>
+                            <td>{prospect.geography}</td>
                             <td className='action'>
                                 <button 
                                     className={`button-link ${prospect.status !== 'open' ? 'disabled' : ''}`} 

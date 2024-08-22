@@ -67,16 +67,6 @@ const Profile = () => {
             />
           </label>
           <label>
-            Email:
-            <input
-              type="email"
-              name="email"
-              value={profile.email || ''}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          </label>
-          <label>
             Phone Number:
             <input
               type="text"
@@ -96,36 +86,30 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </label>
-          <label>
-            Designation:
-            <input
-              type="text"
-              name="designation"
-              value={profile.designation || ''}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          </label>
-          <label>
-            Company Name:
-            <input
-              type="text"
-              name="company_name"
-              value={profile.company_name || ''}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          </label>
-          {/* <label>
-            User Type:
-            <input
-              type="text"
-              name="user_type"
-              value={profile.user_type || ''}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          </label> */}
+          {profile.designation && (
+            <label>
+              Designation:
+              <input
+                type="text"
+                name="designation"
+                value={profile.designation || ''}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </label>
+          )}
+          {profile.company_name && (
+            <label>
+              Company Name:
+              <input
+                type="text"
+                name="company_name"
+                value={profile.company_name || ''}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </label>
+          )}
           {isEditing ? (
             <div className="profile-actions">
               <button type="submit">Save</button>
