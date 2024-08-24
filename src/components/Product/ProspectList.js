@@ -5,14 +5,18 @@ import goBack from '../../images/Group 20.png';
 import api from '../../context/api';
 import { useAuth } from '../../context/Authcontext';
 import Modal from './Modal';
+import BookingModal from '../BookingModal';
 
 const ProspectList = () => {
     const [prospects, setProspects] = useState([]);
     const [filteredProspects, setFilteredProspects] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [flashMessage, setFlashMessage] = useState('');
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [showBookingModal, setShowBookingModal] = useState(false);
+    const [loading, setLoading] = useState(false);  
+    const [flashMessage, setFlashMessage] = useState('');  
     const [selectedProspect, setSelectedProspect] = useState(null);
+    const [productInfo, setProductInfo] = useState({});  // State to hold product info
     const [emailData, setEmailData] = useState({
         email_subject: '',
         email_body: '',
@@ -26,7 +30,7 @@ const ProspectList = () => {
 
     const navigate = useNavigate();
     const { productId } = useParams();
-    const { isAuthenticated, userId } = useAuth();
+    const { isAuthenticated, userId } = useAuth();  
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -43,6 +47,15 @@ const ProspectList = () => {
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);
             });
+
+        // Fetch the product information to display in the modal
+        api.get(`/users/product/${productId}/info/`)
+            .then(response => {
+                setProductInfo(response.data);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the product information!', error);
+            });
     }, [productId]);
 
     useEffect(() => {
@@ -53,7 +66,7 @@ const ProspectList = () => {
         setFilteredProspects(filtered);
     }, [searchName, searchLocation, prospects]);
 
-    const openModal = (prospect) => {
+    const openEmailModal = (prospect) => {
         setSelectedProspect(prospect);
         setEmailData({
             poc_first_name: prospect.first_name,
@@ -63,11 +76,21 @@ const ProspectList = () => {
             email_subject: '',
             email_body: ''
         });
-        setShowModal(true);
+        setShowEmailModal(true);
     };
 
-    const closeModal = () => {
-        setShowModal(false);
+    const closeEmailModal = () => {
+        setShowEmailModal(false);
+        setSelectedProspect(null);
+    };
+
+    const openBookingModal = (prospect) => {
+        setSelectedProspect(prospect);
+        setShowBookingModal(true);
+    };
+
+    const closeBookingModal = () => {
+        setShowBookingModal(false);
         setSelectedProspect(null);
     };
 
@@ -83,7 +106,7 @@ const ProspectList = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleEmailSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
 
@@ -96,19 +119,33 @@ const ProspectList = () => {
 
         api.post('/users/email-request/', emailRequestData)
             .then(response => {
-                console.log('Email request sent successfully:', response.data);
                 setFlashMessage('Email sent successfully!');
                 setTimeout(() => setFlashMessage(''), 3000);
-                closeModal();
+                closeEmailModal();
             })
             .catch(error => {
-                console.error('There was an error sending the email request:', error);
+                console.error('There was an error sending the email request!', error);
                 setFlashMessage('Failed to send email.');
                 setTimeout(() => setFlashMessage(''), 3000);
             })
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    const handleBookingModalAction = (action) => {
+        const queryParams = new URLSearchParams({ prospectId: selectedProspect?.id });
+        if (action === 'check') {
+            navigate(`/product/${productId}/icp-qualifying-questions?${queryParams}`);
+        } else {
+            navigate(`/product/${productId}/options/book-meeting?${queryParams}`, {
+                state: {
+                    productName: productInfo.name,  // Using product name in booking modal
+                    companyName: selectedProspect.domain,
+                },
+            });
+        }
+        closeBookingModal();
     };
 
     return (
@@ -118,6 +155,7 @@ const ProspectList = () => {
             </button>
             <h1>Prospect List</h1>
 
+            {/* Flash message */}
             {flashMessage && <div className="flash-message">{flashMessage}</div>}
 
             <table className="prospect-list-table">
@@ -159,27 +197,26 @@ const ProspectList = () => {
                             <td className='action'>
                                 <button 
                                     className={`button-link ${prospect.status !== 'open' ? 'disabled' : ''}`} 
-                                    onClick={prospect.status === 'open' ? () => openModal(prospect) : null}
+                                    onClick={prospect.status === 'open' ? () => openEmailModal(prospect) : null}
                                 >
                                     Send Email
                                 </button>
-                                <a
-                                    href={`/product/${productId}/options/book-meeting?prospectId=${prospect.id}`}
+                                <button 
                                     className={`button-link ${prospect.status !== 'open' ? 'disabled' : ''}`}
-                                    onClick={prospect.status !== 'open' ? (e) => e.preventDefault() : null}
+                                    onClick={prospect.status === 'open' ? () => openBookingModal(prospect) : null}
                                 >
                                     Book Meeting
-                                </a>
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            <Modal show={showModal} onClose={closeModal}>
+            <Modal show={showEmailModal} onClose={closeEmailModal}>
                 <h2>Send Email</h2>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleEmailSubmit}>
                     <div>
                         <label>Subject</label>
                         <input
@@ -244,6 +281,14 @@ const ProspectList = () => {
                     </button>
                 </form>
             </Modal>
+
+            {showBookingModal && (
+                <BookingModal
+                    onClose={closeBookingModal}
+                    onAction={handleBookingModalAction}
+                    productName={productInfo.name}  // Passing product name to the booking modal
+                />
+            )}
         </div>
     );
 };

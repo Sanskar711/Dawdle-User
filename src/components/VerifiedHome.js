@@ -3,14 +3,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './VerifiedHome.css';
 import api from '../context/api';
 import Arrow from '../images/Arrow.png';
-import CalendarIcon from '../images/calendar-icon.png';
-import placeholder from '../images/Placeholder.png';
+import CalendarIcon from '../images/calendar-icon.png'; // Make sure to update the path to the correct location
+import placeholder from '../images/Placeholder.png';  // Placeholder image
+import BookingModal from './BookingModal';
 
 const VerifiedHome = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,13 +44,29 @@ const VerifiedHome = () => {
     }
   }, [location.search, products]);
 
-  const handleBookMeeting = (id, productName, companyName) => {
-    navigate(`/product/${id}/options/book-meeting`, {
-      state: {
-        productName: productName,
-        companyName: companyName,
-      },
-    });
+  const handleBookMeeting = (product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
+
+  const handleModalAction = (action) => {
+    const queryParams = new URLSearchParams({ productId: selectedProduct?.id });
+    if (action === 'check') {
+      navigate(`/product/${selectedProduct.id}/icp-qualifying-questions?${queryParams}`);
+    } else {
+      navigate(`/product/${selectedProduct.id}/options/book-meeting?${queryParams}`, {
+        state: {
+          productName: selectedProduct.name,
+          companyName: selectedProduct.client_name,
+        },
+      });
+    }
+    handleModalClose();
   };
 
   if (loading) {
@@ -73,7 +92,10 @@ const VerifiedHome = () => {
             </div>
           </div>
           <div className="button-group">
-            <button className="book-meeting-btn" onClick={() => handleBookMeeting(product.id, product.name, product.client_name)}>
+            <button 
+              className="book-meeting-btn" 
+              onClick={() => handleBookMeeting(product)}
+            >
               <img src={CalendarIcon} alt="calendar" className="icon" />
               Book Meeting
             </button>
@@ -86,6 +108,13 @@ const VerifiedHome = () => {
           </div>
         </div>
       ))}
+      {showModal && (
+        <BookingModal 
+          onClose={handleModalClose} 
+          onAction={handleModalAction} 
+          productName={selectedProduct?.name}
+        />
+      )}
     </div>
   );
 };

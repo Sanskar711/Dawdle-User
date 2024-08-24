@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import api from '../context/api';
 import { useAuth } from '../context/Authcontext';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { userProfile, fetchUserProfile } = useAuth();
+  const { userProfile, fetchUserProfile,isAuthenticated } = useAuth();
   const [profile, setProfile] = useState(userProfile);
   const [isEditing, setIsEditing] = useState(false);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuthenticated) {
+        navigate('/login');
+    }
+}, [isAuthenticated, navigate]);
   useEffect(() => {
     setProfile(userProfile); // Sync profile state with the context data
   }, [userProfile]);
