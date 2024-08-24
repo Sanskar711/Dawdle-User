@@ -22,12 +22,20 @@ export const AuthProvider = ({ children }) => {
     try {
       const decodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-  
+
+      console.log(decodedToken)
+      if(decodedToken.client_id){
+        console.log("Token expired");
+        Cookies.remove('token');
+        setIsAuthenticated(false);
+      }
+
       if (decodedToken.exp < currentTime) {
         console.log("Token expired");
         Cookies.remove('token');
         setIsAuthenticated(false);
       } else {
+
         setIsAuthenticated(true);
         setUserId(decodedToken.user_id);  // Ensure userId is set
         fetchUserProfile();

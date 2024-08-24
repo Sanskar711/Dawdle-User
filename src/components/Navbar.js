@@ -8,7 +8,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { logout, userProfile, isAuthenticated, fetchUserProfile } = useAuth();
+  const { logout, userProfile, isAuthenticated, fetchUserProfile,checkAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation(); // Get the current route
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +46,7 @@ const Navbar = () => {
   }, [dropdownOpen]);
 
   useEffect(() => {
+    checkAuth();
     if (isAuthenticated) {
       fetchUserProfile();
       return;

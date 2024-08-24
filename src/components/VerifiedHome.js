@@ -83,6 +83,7 @@ const VerifiedHome = () => {
         <div key={product.id} className="product-card">
           <div className="product-info">
             <img
+            
               src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}
               alt={product.name}
               className="product-logo"

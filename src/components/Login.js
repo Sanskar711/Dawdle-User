@@ -6,11 +6,12 @@ import { useAuth } from '../context/Authcontext'; // Correct path
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const { isAuthenticated, login, error, setError } = useAuth(); // Assuming setError is exposed from context
+  const { isAuthenticated, login, error, setError,checkAuth } = useAuth(); // Assuming setError is exposed from context
   const navigate = useNavigate();
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
   useEffect(() => {
+    checkAuth();
     if (isAuthenticated) {
       navigate('/home');
     }
