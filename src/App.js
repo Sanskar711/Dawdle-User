@@ -18,6 +18,7 @@ import Dashboard from './components/Dashboard';
 import MeetingDetail from './components/MeetingDetail';
 import MeetingsCard from './components/Meetings';
 import ICPQualifyingQuestions from './components/ICPQuestions';
+import LandingPage from './components/LandigPage';
 
 const App = () => {
 
@@ -51,9 +52,7 @@ const App = () => {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
+              <LandingPage/>
             }
           />
           <Route path="/product/:productId/options" element={<OptionList/>} />

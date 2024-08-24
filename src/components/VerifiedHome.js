@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './VerifiedHome.css';
-import api from '../context/api';  // Use the centralized Axios instance
+import api from '../context/api';
 import Arrow from '../images/Arrow.png';
 import CalendarIcon from '../images/calendar-icon.png'; // Make sure to update the path to the correct location
 import placeholder from '../images/Placeholder.png';  // Placeholder image
@@ -9,16 +9,19 @@ import BookingModal from './BookingModal';
 
 const VerifiedHome = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     api.get('/users/user-products/')
       .then(response => {
         setProducts(response.data);
+        setFilteredProducts(response.data);
         setLoading(false);
       })
       .catch(error => {
@@ -26,6 +29,20 @@ const VerifiedHome = () => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchTerm = searchParams.get('search');
+
+    if (searchTerm) {
+      const filtered = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [location.search, products]);
 
   const handleBookMeeting = (product) => {
     setSelectedProduct(product);
@@ -38,10 +55,11 @@ const VerifiedHome = () => {
   };
 
   const handleModalAction = (action) => {
+    const queryParams = new URLSearchParams({ productId: selectedProduct?.id });
     if (action === 'check') {
-      navigate(`/product/${selectedProduct.id}/icp-qualifying-questions`);
+      navigate(`/product/${selectedProduct.id}/icp-qualifying-questions?${queryParams}`);
     } else {
-      navigate(`/product/${selectedProduct.id}/options/book-meeting`, {
+      navigate(`/product/${selectedProduct.id}/options/book-meeting?${queryParams}`, {
         state: {
           productName: selectedProduct.name,
           companyName: selectedProduct.client_name,
@@ -61,13 +79,13 @@ const VerifiedHome = () => {
 
   return (
     <div className="product-list">
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <div key={product.id} className="product-card">
           <div className="product-info">
-            <img 
-              src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}    
-              alt={product.name} 
-              className="product-logo" 
+            <img
+              src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}
+              alt={product.name}
+              className="product-logo"
             />
             <div>
               <h3>{product.name}</h3>
@@ -81,11 +99,11 @@ const VerifiedHome = () => {
               <img src={CalendarIcon} alt="calendar" className="icon" />
               Book Meeting
             </button>
-            <button 
+            <button
               className="arrow-btn"
               onClick={() => navigate(`/product/${product.id}/options`)}
             >
-              <img src={Arrow} alt="arrow"/>
+              <img src={Arrow} alt="arrow" />
             </button>
           </div>
         </div>

@@ -97,6 +97,82 @@ h1 {
     gap: 10px;
 }
 
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* Search input styling */
+.search-input {
+    width: calc(100% - 24px); /* Full width minus padding */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.use-cases {
+    margin-bottom: 20px;
+}
+
+.use-case-table {
+    display: table;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.use-case-row {
+    display: table-row;
+}
+
+.use-case-checkbox, .use-case-label {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 5px 10px;
+}
+
+.use-case-checkbox {
+    width: 5%;
+}
+
+.use-case-label {
+    width: 95%;
+    padding-left: 10px;
+    font-size: 0.9em;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     h1 {
@@ -143,5 +219,47 @@ h1 {
     .action {
         flex-direction: column;
         gap: 5px;
+    }
+
+    .use-case-options {
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 0.8em;
+    }
+
+    .submit-button {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+}
+
+.flash-message {
+    position: fixed; /* Fix the position at the top */
+    top: 20px; /* Position it 20px from the top of the screen */
+    left: 50%; /* Center the message horizontally */
+    transform: translateX(-50%); /* Adjust for the element's width */
+    background-color: #28a745; /* Green background color */
+    color: white; /* White text color */
+    padding: 15px 30px; /* Add padding for better spacing */
+    border-radius: 5px; /* Round the corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
+    z-index: 1000; /* Ensure it appears above other elements */
+    text-align: center; /* Center the text */
+    font-size: 1em; /* Standard font size */
+    animation: fadeOut 3s ease-in-out forwards; /* Add fade-out animation */
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden; /* Hide the element after it fades out */
     }
 }

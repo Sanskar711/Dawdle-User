@@ -9,6 +9,8 @@ import BookingModal from '../BookingModal';
 
 const ProspectList = () => {
     const [prospects, setProspects] = useState([]);
+    const [filteredProspects, setFilteredProspects] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [loading, setLoading] = useState(false);  
@@ -23,6 +25,8 @@ const ProspectList = () => {
         poc_email: '',
         poc_designation: '',
     });
+    const [searchName, setSearchName] = useState('');
+    const [searchLocation, setSearchLocation] = useState('');
 
     const navigate = useNavigate();
     const { productId } = useParams();
@@ -38,22 +42,29 @@ const ProspectList = () => {
         api.get(`/users/product/${productId}/prospects/`)
             .then(response => {
                 setProspects(response.data);
+                setFilteredProspects(response.data);
             })
             .catch(error => {
                 console.error('There was an error fetching the prospects!', error);
             });
-    }, [productId]);
 
-    // Fetch product info
-    useEffect(() => {
+        // Fetch the product information to display in the modal
         api.get(`/users/product/${productId}/info/`)
             .then(response => {
                 setProductInfo(response.data);
             })
             .catch(error => {
-                console.error('There was an error fetching the product info!', error);
+                console.error('There was an error fetching the product information!', error);
             });
     }, [productId]);
+
+    useEffect(() => {
+        const filtered = prospects.filter(prospect =>
+            prospect.company_name.toLowerCase().includes(searchName.toLowerCase()) &&
+            prospect.geography.toLowerCase().includes(searchLocation.toLowerCase())
+        );
+        setFilteredProspects(filtered);
+    }, [searchName, searchLocation, prospects]);
 
     const openEmailModal = (prospect) => {
         setSelectedProspect(prospect);
@@ -87,12 +98,20 @@ const ProspectList = () => {
         setEmailData({ ...emailData, [e.target.name]: e.target.value });
     };
 
+    const handleSearchChange = (e) => {
+        if (e.target.name === 'searchName') {
+            setSearchName(e.target.value);
+        } else if (e.target.name === 'searchLocation') {
+            setSearchLocation(e.target.value);
+        }
+    };
+
     const handleEmailSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
 
         const emailRequestData = {
-            user_id: userId,  
+            user_id: userId,
             prospect_id: selectedProspect.id,
             product_id: productId,
             ...emailData,
@@ -100,13 +119,12 @@ const ProspectList = () => {
 
         api.post('/users/email-request/', emailRequestData)
             .then(response => {
-                console.log('Email request sent successfully:', response.data);
                 setFlashMessage('Email sent successfully!');
                 setTimeout(() => setFlashMessage(''), 3000);
                 closeEmailModal();
             })
             .catch(error => {
-                console.error('There was an error sending the email request:', error);
+                console.error('There was an error sending the email request!', error);
                 setFlashMessage('Failed to send email.');
                 setTimeout(() => setFlashMessage(''), 3000);
             })
@@ -122,14 +140,13 @@ const ProspectList = () => {
         } else {
             navigate(`/product/${productId}/options/book-meeting?${queryParams}`, {
                 state: {
-                    productName: productInfo.product_name,
+                    productName: productInfo.name,  // Using product name in booking modal
                     companyName: selectedProspect.domain,
                 },
             });
         }
         closeBookingModal();
     };
-    
 
     return (
         <div className="prospect-list-container">
@@ -138,6 +155,7 @@ const ProspectList = () => {
             </button>
             <h1>Prospect List</h1>
 
+            {/* Flash message */}
             {flashMessage && <div className="flash-message">{flashMessage}</div>}
 
             <table className="prospect-list-table">
@@ -147,9 +165,32 @@ const ProspectList = () => {
                         <th>Location</th>
                         <th>Action</th>
                     </tr>
+                    <tr>
+                        <th>
+                            <input
+                                type="text"
+                                name="searchName"
+                                value={searchName}
+                                onChange={handleSearchChange}
+                                placeholder="Search by Name"
+                                className="search-input"
+                            />
+                        </th>
+                        <th>
+                            <input
+                                type="text"
+                                name="searchLocation"
+                                value={searchLocation}
+                                onChange={handleSearchChange}
+                                placeholder="Search by Location"
+                                className="search-input"
+                            />
+                        </th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {prospects.map((prospect, index) => (
+                    {filteredProspects.map((prospect, index) => (
                         <tr key={index}>
                             <td>{prospect.company_name}</td>
                             <td>{prospect.geography}</td>
@@ -245,7 +286,7 @@ const ProspectList = () => {
                 <BookingModal
                     onClose={closeBookingModal}
                     onAction={handleBookingModalAction}
-                    productName={productInfo.name}  // Using product name in booking modal
+                    productName={productInfo.name}  // Passing product name to the booking modal
                 />
             )}
         </div>

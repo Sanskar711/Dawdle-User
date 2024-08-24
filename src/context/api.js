@@ -1,9 +1,11 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-// Create an Axios instance with default settings
+// Set baseURL based on environment
+const url = process.env.REACT_APP_ENVIRONMENT==='production' ? process.env.REACT_APP_API_URL  :'http://127.0.0.1:8000';
+
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: url,
   withCredentials: true,  // Ensure credentials are sent with requests
 });
 
