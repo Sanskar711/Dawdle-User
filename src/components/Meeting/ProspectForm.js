@@ -37,7 +37,6 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        console.log(prospectDetails);
         onNext(prospectDetails);
     };
 

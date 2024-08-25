@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './VerifiedHome.css';
 import api from '../context/api';
 import Arrow from '../images/Arrow.png';
-import CalendarIcon from '../images/calendar-icon.png'; // Make sure to update the path to the correct location
-import placeholder from '../images/Placeholder.png';  // Placeholder image
+import CalendarIcon from '../images/calendar-icon.png';
+import placeholder from '../images/Placeholder.png';
 import BookingModal from './BookingModal';
 
 const VerifiedHome = () => {
@@ -83,10 +83,13 @@ const VerifiedHome = () => {
         <div key={product.id} className="product-card">
           <div className="product-info">
             <img
-            
               src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}
               alt={product.name}
               className="product-logo"
+              onError={(e) =>{
+                e.currentTarget.src = placeholder
+                console.log( `${api.defaults.baseURL}${product.client_logo}`)
+              } }  // Fallback in case of an error
             />
             <div>
               <h3>{product.name}</h3>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Meetings.css';
-import users from '../context/api';  // Replace api with users
+import users from '../context/api';
 import { useNavigate } from 'react-router-dom';
 
 const MeetingsCard = ({ filterBy, title }) => {
@@ -9,6 +9,7 @@ const MeetingsCard = ({ filterBy, title }) => {
   const [error, setError] = useState(null);
   const [productNames, setProductNames] = useState({});
   const [prospectNames, setProspectNames] = useState({});
+  const [sorted, setSorted] = useState(false); // New state for sorting order
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const MeetingsCard = ({ filterBy, title }) => {
       try {
         const response = await users.get('/users/meetings/');
         const filteredMeetings = response.data.filter(meeting => meeting.status === filterBy);
-        const sortedMeetings = sortMeetings(filteredMeetings);
+        const sortedMeetings = sortMeetings(filteredMeetings, sorted);
         setMeetings(sortedMeetings);
 
         // Extract product and prospect IDs
@@ -38,10 +39,14 @@ const MeetingsCard = ({ filterBy, title }) => {
     };
 
     fetchMeetings();
-  }, [filterBy]);
+  }, [filterBy, sorted]);
 
-  const sortMeetings = (meetings) => {
-    return meetings.sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+  const sortMeetings = (meetings, ascending) => {
+    return meetings.sort((a, b) => {
+      return ascending
+        ? new Date(a.scheduled_at) - new Date(b.scheduled_at)
+        : new Date(b.scheduled_at) - new Date(a.scheduled_at);
+    });
   };
 
   const fetchProductNames = async (productIds) => {
@@ -76,6 +81,10 @@ const MeetingsCard = ({ filterBy, title }) => {
     return prospectNamesMap;
   };
 
+  const toggleSortOrder = () => {
+    setSorted(!sorted);
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -91,6 +100,9 @@ const MeetingsCard = ({ filterBy, title }) => {
   return (
     <div className="meetings-container">
       <h1 className="title">{title}</h1>
+      <button onClick={toggleSortOrder}>
+        Sort by Time ({sorted ? 'Latest First' : 'Earliest First'})
+      </button>
       <div className="meetings-list">
         {meetings.map((meeting) => (
           <div key={meeting.id} className="meeting-item" onClick={() => handleMeetingDetails(meeting.id)}>
