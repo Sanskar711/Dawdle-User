@@ -59,7 +59,7 @@ const Login = () => {
         <button type="submit">Send OTP</button>
       </form>
       {error && <div className="error-message">{error}</div>}
-      <p>Don't have an account? <a href="/register">Register</a></p>
+      <p>Don't have an account? <a href="/user/register">Register</a></p>
       {isOtpModalOpen && (
         <Otp
           onResend={handleOtpResend}

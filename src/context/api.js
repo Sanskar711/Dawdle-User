@@ -8,8 +8,7 @@ const url = environment === 'production'
   ? process.env.REACT_APP_API_URL  
   : 'http://127.0.0.1:8000';  // Default to development server if not production
 
-console.log(`Environment: '${environment}'`);
-console.log(`Base URL: ${url}`);
+
 
 const api = axios.create({
   baseURL: url,

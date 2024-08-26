@@ -57,7 +57,7 @@ const Register = () => {
     <div className="register-container">
       <div className="register-logo">Dawdle</div>
       <h2>Create a new account</h2>
-      <p>Already have an account? <a href="/login">Sign in</a></p>
+      <p>Already have an account? <a href="/user/login">Sign in</a></p>
       <form className="register-form" onSubmit={handleSubmit}>
         <input
           type="email"
