@@ -6,7 +6,8 @@ import { useAuth } from '../context/Authcontext'; // Correct path
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const { isAuthenticated, login, error, setError,checkAuth } = useAuth(); // Assuming setError is exposed from context
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const { isAuthenticated, login, error, setError, checkAuth } = useAuth(); // Assuming setError is exposed from context
   const navigate = useNavigate();
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
@@ -26,11 +27,14 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSendingOtp(true); // Disable the button and change text
     login(email).then((loginSuccessful) => {
-      // console.log(loginSuccessful)
       if (loginSuccessful) {
         setIsOtpModalOpen(true);
       }
+      setIsSendingOtp(false); // Re-enable the button after the operation
+    }).catch(() => {
+      setIsSendingOtp(false); // Re-enable the button if login fails
     });
   };
 
@@ -56,7 +60,13 @@ const Login = () => {
           onChange={handleInputChange}
           required
         />
-        <button type="submit">Send OTP</button>
+        <button
+          type="submit"
+          className={isSendingOtp ? 'sending-otp' : ''}
+          disabled={isSendingOtp}
+        >
+          {isSendingOtp ? 'Sending OTP...' : 'Send OTP'}
+        </button>
       </form>
       {error && <div className="error-message">{error}</div>}
       <p>Don't have an account? <a href="/user/register">Register</a></p>

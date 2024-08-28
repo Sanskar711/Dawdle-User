@@ -54,6 +54,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter first name"
                             value={prospectDetails.firstName}
                             onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -64,6 +65,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter last name"
                             value={prospectDetails.lastName}
                             onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -74,6 +76,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter email address"
                             value={prospectDetails.email}
                             onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -84,6 +87,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter designation"
                             value={prospectDetails.designation}
                             onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -94,6 +98,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter phone number"
                             value={prospectDetails.phoneNumber}
                             onChange={handleInputChange}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -103,6 +108,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter additional information"
                             value={prospectDetails.additionalInfo}
                             onChange={handleInputChange}
+                            required
                         ></textarea>
                     </div>
                     <div className="form-group">
@@ -117,6 +123,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                                         value={useCase.title}
                                         checked={prospectDetails.useCases.includes(useCase.title)}
                                         onChange={handleUseCaseChange}
+                                        required={prospectDetails.useCases.length === 0} // Make checkbox required if none selected
                                     />
                                     <label htmlFor={`useCase-${useCase.id}`}>{useCase.title}</label>
                                 </div>
@@ -132,6 +139,7 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                                 placeholder="Enter geographical location"
                                 value={prospectDetails.geographicalLocation || ''}
                                 onChange={handleInputChange}
+                                required
                             />
                         </div>
                     )}

@@ -47,6 +47,7 @@ const QualifyingQuestionsModal = ({ isOpen, onClose, onSave, productId }) => {
                                 placeholder="Your response"
                                 value={responses[question.id] || ''}
                                 onChange={(e) => handleInputChange(e, question.id)}
+                                required
                             />
                         </div>
                     ))}

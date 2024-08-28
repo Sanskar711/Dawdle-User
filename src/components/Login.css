@@ -75,7 +75,10 @@
     z-index: 1000; /* Ensure it appears above other elements */
     animation: fadeOut 3s forwards; /* Add fade-out animation */
   }
-  
+  .login-form button.sending-otp {
+    background-color: #004d1f; /* Darkest green for sending OTP state */
+    cursor: not-allowed; /* Change cursor to indicate the button is disabled */
+  }
   @keyframes fadeOut {
     0% {
       opacity: 1;
