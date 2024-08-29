@@ -87,6 +87,7 @@ const BookMeeting = () => {
                 const newProspect = {
                     company_name: prospectName,
                     geography: details.geographicalLocation,
+                    is_valid: false
                 };
 
                 const response = await users.post(`/users/prospects/create/`, newProspect);
