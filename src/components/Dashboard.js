@@ -11,6 +11,7 @@ const Dashboard = () => {
   const [meetingsScheduled, setMeetingsScheduled] = useState(0);
   const [dealsClosed, setDealsClosed] = useState(0);
   const [dealsCompleted, setDealsCompleted] = useState(0);
+  const [meetingsPending, setMeetingsPending] = useState(0); // New state for Pending meetings
   const [selectedMetric, setSelectedMetric] = useState('scheduled');
   const navigate = useNavigate();
 
@@ -27,9 +28,11 @@ const Dashboard = () => {
     try {
       const response = await api.get('/users/meetings/');
       const meetings = response.data;
+      console.log(meetings)
       setMeetingsScheduled(meetings.filter(meeting => meeting.status === 'scheduled').length);
       setDealsClosed(meetings.filter(meeting => meeting.status === 'closed').length);
       setDealsCompleted(meetings.filter(meeting => meeting.status === 'completed').length);
+      setMeetingsPending(meetings.filter(meeting => meeting.status === 'pending').length); // Calculate Pending meetings
     } catch (err) {
       console.error('Error fetching performance metrics:', err);
     }
@@ -47,6 +50,8 @@ const Dashboard = () => {
         return 'Completed Meetings';
       case 'closed':
         return 'Closed Deals';
+      case 'pending': // Add case for pending meetings
+        return 'Pending Meetings';
       default:
         return 'Meetings';
     }
@@ -68,6 +73,10 @@ const Dashboard = () => {
         <h1 className="title">Performance Metrics</h1>
         <p className="subtitle">Track your sales performance data</p>
         <div className="metrics">
+        <div className="metric-item" onClick={() => handleMetricClick('pending')}> {/* New metric for pending */}
+            <span className="metric-number">{meetingsPending}</span>
+            <span className="metric-label">Meetings Pending</span>
+          </div>
           <div className="metric-item" onClick={() => handleMetricClick('scheduled')}>
             <span className="metric-number">{meetingsScheduled}</span>
             <span className="metric-label">Meetings Scheduled</span>
@@ -80,6 +89,7 @@ const Dashboard = () => {
             <span className="metric-number">{dealsClosed}</span>
             <span className="metric-label">Deals Closed</span>
           </div>
+          
         </div>
       </div>
 

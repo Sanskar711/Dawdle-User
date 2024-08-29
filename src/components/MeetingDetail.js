@@ -31,6 +31,7 @@ const MeetingDetail = () => {
     <div className="meeting-detail-container">
       <h1>Meeting Details</h1>
       <div className="meeting-info">
+      <p><strong>Product:</strong> {meeting.product.name}</p>
         <p><strong>Meeting Date:</strong> {new Date(meeting.scheduled_at).toLocaleString()}</p>
         <p><strong>Status:</strong> {meeting.status}</p>
       </div>

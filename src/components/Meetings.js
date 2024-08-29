@@ -55,6 +55,7 @@ const MeetingsCard = ({ filterBy, title }) => {
       productIds.map(async (productId) => {
         try {
           const response = await users.get(`users/product/${productId}/info/`);
+          console.log(response.data)
           productNamesMap[productId] = response.data.name;
         } catch (err) {
           console.error(`Error fetching product info for ID ${productId}:`, err);
@@ -107,11 +108,11 @@ const MeetingsCard = ({ filterBy, title }) => {
         {meetings.map((meeting) => (
           <div key={meeting.id} className="meeting-item" onClick={() => handleMeetingDetails(meeting.id)}>
             <strong>
-              {meeting.prospect ? prospectNames[meeting.prospect] || "Loading..." : "No Prospect Information"}
+              {meeting.prospect ? meeting.prospect.company_name || "Loading..." : "No Prospect Information"}
             </strong>
             <span>{new Date(meeting.scheduled_at).toLocaleString()}</span>
             <span>
-              {meeting.product ? productNames[meeting.product] || "Loading..." : "No Product Information"}
+              {meeting.product ? meeting.product.name || "Loading..." : "No Product Information"}
             </span>
           </div>
         ))}
