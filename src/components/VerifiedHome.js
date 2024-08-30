@@ -79,39 +79,43 @@ const VerifiedHome = () => {
 
   return (
     <div className="product-list">
-      {filteredProducts.map((product) => (
-        <div key={product.id} className="product-card">
-          <div className="product-info">
-            <img
-              src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}
-              alt={product.name}
-              className="product-logo"
-              onError={(e) =>{
-                e.currentTarget.src = placeholder
-                console.log( `${api.defaults.baseURL}${product.client_logo}`)
-              } }  // Fallback in case of an error
-            />
-            <div>
-              <h3>{product.name}</h3>
+      {filteredProducts.length === 0 ? (
+        <div className="no-products">No assigned products</div>
+      ) : (
+        filteredProducts.map((product) => (
+          <div key={product.id} className="product-card">
+            <div className="product-info">
+              <img
+                src={product.client_logo ? `${api.defaults.baseURL}${product.client_logo}` : placeholder}
+                alt={product.name}
+                className="product-logo"
+                onError={(e) => {
+                  e.currentTarget.src = placeholder;
+                  console.log(`${api.defaults.baseURL}${product.client_logo}`);
+                }}  // Fallback in case of an error
+              />
+              <div>
+                <h3>{product.name}</h3>
+              </div>
+            </div>
+            <div className="button-group">
+              <button 
+                className="book-meeting-btn" 
+                onClick={() => handleBookMeeting(product)}
+              >
+                <img src={CalendarIcon} alt="calendar" className="icon" />
+                Book Meeting
+              </button>
+              <button
+                className="arrow-btn"
+                onClick={() => navigate(`/product/${product.id}/options`)}
+              >
+                <img src={Arrow} alt="arrow" />
+              </button>
             </div>
           </div>
-          <div className="button-group">
-            <button 
-              className="book-meeting-btn" 
-              onClick={() => handleBookMeeting(product)}
-            >
-              <img src={CalendarIcon} alt="calendar" className="icon" />
-              Book Meeting
-            </button>
-            <button
-              className="arrow-btn"
-              onClick={() => navigate(`/product/${product.id}/options`)}
-            >
-              <img src={Arrow} alt="arrow" />
-            </button>
-          </div>
-        </div>
-      ))}
+        ))
+      )}
       {showModal && (
         <BookingModal 
           onClose={handleModalClose} 

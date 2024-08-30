@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from './api';  // Import the Axios instance
 import Cookies from 'js-cookie';  // Use js-cookie for cookie management
-import { jwtDecode } from 'jwt-decode';  // Import jwt-decode for decoding JWT tokens
+import {jwtDecode} from 'jwt-decode';  // Import jwt-decode for decoding JWT tokens
 
 const AuthContext = createContext();
 
@@ -10,7 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [userProfile, setUserProfile] = useState({});
-  const [error, setError] = useState(null);  // Add error state
+  const [error, setError] = useState(null);
+
   const checkAuth = () => {
     const token = Cookies.get('token');
     if (!token) {
@@ -18,26 +19,18 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       return;
     }
-    
+
     try {
       const decodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-
-      // console.log(decodedToken)
-      if(decodedToken.client_id){
-        console.log("Token expired");
-        Cookies.remove('token');
-        setIsAuthenticated(false);
-      }
 
       if (decodedToken.exp < currentTime) {
         console.log("Token expired");
         Cookies.remove('token');
         setIsAuthenticated(false);
       } else {
-
         setIsAuthenticated(true);
-        setUserId(decodedToken.user_id);  // Ensure userId is set
+        setUserId(decodedToken.user_id);
         fetchUserProfile();
       }
     } catch (error) {
@@ -52,13 +45,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchUserProfile = async () => {
-    // console.log(userId)
     if (!userId) return;
 
     try { 
-      // console.log(userId)
       const response = await api.get(`/users/${userId}/profile/`);
-      // console.log(response.data);
       setUserProfile(response.data);
     } catch (error) {
       console.error('Failed to fetch user profile:', error);
@@ -69,8 +59,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/users/register/', formValues);
       console.log('User registered successfully', response.data);
+      return true;  // Indicate success
     } catch (error) {
       console.error('There was an error registering the user!', error);
+      setError(error.response?.data?.message || 'Registration failed');
+      return false;  // Indicate failure
     }
   };
 
@@ -79,17 +72,17 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/users/signin/', { email });
       if (response.data.user_id) {
         setUserId(response.data.user_id);
-        setError(null);  // Reset error state if login is successful
-        return true;     // Indicate login was successful
+        setError(null);  
+        return true;     
       }
     } catch (error) {
       console.error('There was an error sending the OTP!', error);
       if (error.response && error.response.status === 404) {
-        setError('User not found');  // Set error message if user not found
+        setError('User not found');  
       } else {
         setError('An error occurred while sending the OTP');
       }
-      return false;  // Indicate login failed
+      return false;  
     }
   };
 
@@ -113,17 +106,15 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      // await api.get('/users/logout/');
       setIsAuthenticated(false);
       Cookies.remove('token');
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
-  
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, verifyOtp, logout, register, checkAuth , userProfile, fetchUserProfile,userId,error,setError}}>
+    <AuthContext.Provider value={{ isAuthenticated, login, verifyOtp, logout, register, checkAuth, userProfile, fetchUserProfile, userId, error, setError }}>
       {!loading && children}
     </AuthContext.Provider>
   );

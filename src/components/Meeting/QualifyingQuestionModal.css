@@ -85,3 +85,7 @@
 .submit-button:hover {
     background-color: #5754d4;
 }
+.submit-button.disabled {
+    background-color: #5754d4; /* Or any color indicating disabled state */
+    cursor: not-allowed;
+}

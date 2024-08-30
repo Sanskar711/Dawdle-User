@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
-import dummyProfile from '../images/user_default.jpg';
 import api from '../context/api';
 import { useAuth } from '../context/Authcontext';
 import { useNavigate } from 'react-router-dom';
 import MeetingsCard from './Meetings';
 
 const Dashboard = () => {
-  const { userProfile, isAuthenticated, fetchUserProfile } = useAuth();
+  const { isAuthenticated, fetchUserProfile } = useAuth();
   const [meetingsScheduled, setMeetingsScheduled] = useState(0);
   const [dealsClosed, setDealsClosed] = useState(0);
   const [dealsCompleted, setDealsCompleted] = useState(0);
-  const [meetingsPending, setMeetingsPending] = useState(0); // New state for Pending meetings
+  const [meetingsPending, setMeetingsPending] = useState(0);
   const [selectedMetric, setSelectedMetric] = useState('scheduled');
   const navigate = useNavigate();
 
@@ -28,11 +27,10 @@ const Dashboard = () => {
     try {
       const response = await api.get('/users/meetings/');
       const meetings = response.data;
-      console.log(meetings)
       setMeetingsScheduled(meetings.filter(meeting => meeting.status === 'scheduled').length);
       setDealsClosed(meetings.filter(meeting => meeting.status === 'closed').length);
       setDealsCompleted(meetings.filter(meeting => meeting.status === 'completed').length);
-      setMeetingsPending(meetings.filter(meeting => meeting.status === 'pending').length); // Calculate Pending meetings
+      setMeetingsPending(meetings.filter(meeting => meeting.status === 'pending').length);
     } catch (err) {
       console.error('Error fetching performance metrics:', err);
     }
@@ -50,7 +48,7 @@ const Dashboard = () => {
         return 'Completed Meetings';
       case 'closed':
         return 'Closed Deals';
-      case 'pending': // Add case for pending meetings
+      case 'pending':
         return 'Pending Meetings';
       default:
         return 'Meetings';
@@ -59,37 +57,37 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="user-profile-dashboard">
-        {/* User Profile Details */}
-        <img src={dummyProfile} alt="User Avatar" className="avatar" />
-        <h2>{userProfile?.first_name || "Sam Rock"}</h2>
-        <p>{userProfile?.email || "samrock@gmail.com"}</p>
-        <p>{userProfile?.phone_number || "+1 123456789"}</p>
-        <p>{userProfile?.designation || ""}</p>
-        <p>{userProfile?.company || ""}</p>
-      </div>
-
       <div className="performance-metrics">
         <h1 className="title">Performance Metrics</h1>
-        <p className="subtitle">Track your sales performance data</p>
         <div className="metrics">
-        <div className="metric-item" onClick={() => handleMetricClick('pending')}> {/* New metric for pending */}
+          <div
+            className={`metric-item ${selectedMetric === 'pending' ? 'selected' : ''}`}
+            onClick={() => handleMetricClick('pending')}
+          >
             <span className="metric-number">{meetingsPending}</span>
             <span className="metric-label">Meetings Pending</span>
           </div>
-          <div className="metric-item" onClick={() => handleMetricClick('scheduled')}>
+          <div
+            className={`metric-item ${selectedMetric === 'scheduled' ? 'selected' : ''}`}
+            onClick={() => handleMetricClick('scheduled')}
+          >
             <span className="metric-number">{meetingsScheduled}</span>
             <span className="metric-label">Meetings Scheduled</span>
           </div>
-          <div className="metric-item" onClick={() => handleMetricClick('completed')}>
+          <div
+            className={`metric-item ${selectedMetric === 'completed' ? 'selected' : ''}`}
+            onClick={() => handleMetricClick('completed')}
+          >
             <span className="metric-number">{dealsCompleted}</span>
             <span className="metric-label">Meetings Completed</span>
           </div>
-          <div className="metric-item" onClick={() => handleMetricClick('closed')}>
+          <div
+            className={`metric-item ${selectedMetric === 'closed' ? 'selected' : ''}`}
+            onClick={() => handleMetricClick('closed')}
+          >
             <span className="metric-number">{dealsClosed}</span>
             <span className="metric-label">Deals Closed</span>
           </div>
-          
         </div>
       </div>
 

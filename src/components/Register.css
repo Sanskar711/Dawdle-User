@@ -1,66 +1,100 @@
-/* src/Register.css */
 .register-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .register-logo {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: #6a0dad;
-  }
-  
-  h2 {
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    margin-bottom: 1.5rem;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .register-form input {
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .role-selector {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-  
-  .role-selector button {
-    padding: 0.5rem 1rem;
-    border: 1px solid #6a0dad;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #6a0dad;
-    cursor: pointer;
-    margin: 0 0.5rem;
-  }
-  
-  .role-selector button.active {
-    background-color: #6a0dad;
-    color: #fff;
-  }
-  
-  .register-form button[type="submit"] {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #6a0dad;
-    color: #fff;
-    cursor: pointer;
-  }
-  
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.register-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #6a0dad;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-form input {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.role-selector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.role-selector button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #6a0dad;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #6a0dad;
+  cursor: pointer;
+  margin: 0 0.5rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.role-selector button.active {
+  background-color: #6a0dad;
+  color: #fff;
+}
+
+.register-form button[type="submit"] {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #6a0dad;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-form button[type="submit"]:disabled {
+  background-color: #b8a2ce;
+  cursor: not-allowed;
+}
+
+/* Popup alert styling */
+.popup-alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50; /* Success green */
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-alert.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-alert.error {
+  background-color: #f44336; /* Error red */
+}

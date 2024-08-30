@@ -1,11 +1,10 @@
-// src/Register.js
 import React, { useState, useEffect } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/Authcontext';
 
 const Register = () => {
-  const { isAuthenticated, register } = useAuth();
+  const { isAuthenticated, register, error, setError } = useAuth();
   const navigate = useNavigate();
   const [role, setRole] = useState('individual');
   const [formValues, setFormValues] = useState({
@@ -17,6 +16,9 @@ const Register = () => {
     designation: '',
     companyName: ''
   });
+  const [alertMessage, setAlertMessage] = useState(''); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [isPopupVisible, setIsPopupVisible] = useState(false); 
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -24,9 +26,19 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (error) {
+      setAlertMessage(error);
+      setIsPopupVisible(true);
+      setTimeout(() => {
+        setIsPopupVisible(false);
+        setError(null); 
+      }, 2000);  // Reduced to 2 seconds
+    }
+  }, [error, setError]);
+
   const handleRoleChange = (selectedRole) => {
     setRole(selectedRole);
-    // Clear the fields that are not relevant for the selected role
     if (selectedRole === 'individual') {
       setFormValues({ ...formValues, designation: '', companyName: '' });
     }
@@ -39,7 +51,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
+    setIsSubmitting(true);
+    setError(null);
+
+    const success = await register({
       first_name: formValues.firstName,
       last_name: formValues.lastName,
       email: formValues.email,
@@ -48,9 +63,23 @@ const Register = () => {
       linkedin_id: formValues.linkedin,
       designation: role === 'organization' ? formValues.designation : '',
       company_name: role === 'organization' ? formValues.companyName : ''
-    };
-    await register(data);
-    navigate('/login');
+    });
+
+    if (success) {
+      setAlertMessage('Registration successful! Redirecting to login page...');
+      setIsPopupVisible(true);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);  // Reduced to 2 seconds
+    } else {
+      setAlertMessage(error);  
+      setIsPopupVisible(true);
+      setTimeout(() => {
+        setIsPopupVisible(false);
+        setError(null); 
+      }, 2000);  // Reduced to 2 seconds
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,6 +101,7 @@ const Register = () => {
             type="button"
             className={role === 'individual' ? 'active' : ''}
             onClick={() => handleRoleChange('individual')}
+            disabled={isSubmitting} 
           >
             Individual
           </button>
@@ -79,6 +109,7 @@ const Register = () => {
             type="button"
             className={role === 'organization' ? 'active' : ''}
             onClick={() => handleRoleChange('organization')}
+            disabled={isSubmitting} 
           >
             Organization
           </button>
@@ -92,6 +123,7 @@ const Register = () => {
               value={formValues.companyName}
               onChange={handleInputChange}
               required
+              disabled={isSubmitting} 
             />
             <input
               type="text"
@@ -99,6 +131,7 @@ const Register = () => {
               placeholder="Designation"
               value={formValues.designation}
               onChange={handleInputChange}
+              disabled={isSubmitting} 
             />
           </>
         )}
@@ -109,6 +142,7 @@ const Register = () => {
           value={formValues.firstName}
           onChange={handleInputChange}
           required
+          disabled={isSubmitting} 
         />
         <input
           type="text"
@@ -117,6 +151,7 @@ const Register = () => {
           value={formValues.lastName}
           onChange={handleInputChange}
           required
+          disabled={isSubmitting} 
         />
         <input
           type="url"
@@ -124,6 +159,7 @@ const Register = () => {
           placeholder="LinkedIn"
           value={formValues.linkedin}
           onChange={handleInputChange}
+          disabled={isSubmitting} 
         />
         <input
           type="tel"
@@ -132,9 +168,17 @@ const Register = () => {
           value={formValues.phone}
           onChange={handleInputChange}
           required
+          disabled={isSubmitting} 
         />
-        <button type="submit">Register</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Registering...' : 'Register'}
+        </button>
       </form>
+      {isPopupVisible && (
+        <div className={`popup-alert show ${error ? 'error' : ''}`}>
+          {alertMessage}
+        </div>
+      )}
     </div>
   );
 };

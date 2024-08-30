@@ -108,7 +108,6 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                             placeholder="Enter additional information"
                             value={prospectDetails.additionalInfo}
                             onChange={handleInputChange}
-                            required
                         ></textarea>
                     </div>
                     <div className="form-group">
@@ -123,7 +122,6 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                                         value={useCase.title}
                                         checked={prospectDetails.useCases.includes(useCase.title)}
                                         onChange={handleUseCaseChange}
-                                        required={prospectDetails.useCases.length === 0} // Make checkbox required if none selected
                                     />
                                     <label htmlFor={`useCase-${useCase.id}`}>{useCase.title}</label>
                                 </div>
@@ -132,15 +130,21 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                     </div>
                     {newProspect && (
                         <div className="form-group">
-                            <label>Geographical Location</label>
-                            <input
-                                type="text"
+                            <label>Prospect Geography</label>
+                            <select
                                 name="geographicalLocation"
-                                placeholder="Enter geographical location"
                                 value={prospectDetails.geographicalLocation || ''}
                                 onChange={handleInputChange}
                                 required
-                            />
+                            >
+                                <option value="">Select Geography</option>
+                                <option value="North America">North America</option>
+                                <option value="Europe">Europe</option>
+                                <option value="Asia">Asia</option>
+                                <option value="South America">South America</option>
+                                <option value="Africa">Africa</option>
+                                <option value="Australia">Australia</option>
+                            </select>
                         </div>
                     )}
                     <button type="submit" className="schedule-button">Next</button>

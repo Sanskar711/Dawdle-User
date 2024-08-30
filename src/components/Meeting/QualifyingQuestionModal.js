@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './QualifyingQuestionModal.css';
 import api from '../../context/api'; // Assuming you have an API instance
 
-const QualifyingQuestionsModal = ({ isOpen, onClose, onSave, productId }) => {
+const QualifyingQuestionsModal = ({ isOpen, onClose, onSave, productId, isSubmitting }) => {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState({});
 
@@ -47,11 +47,17 @@ const QualifyingQuestionsModal = ({ isOpen, onClose, onSave, productId }) => {
                                 placeholder="Your response"
                                 value={responses[question.id] || ''}
                                 onChange={(e) => handleInputChange(e, question.id)}
-                                required
+                                disabled={isSubmitting} // Disable input during submission
                             />
                         </div>
                     ))}
-                    <button type="submit" className="submit-button">Submit</button>
+                    <button
+                        type="submit"
+                        className={`submit-button ${isSubmitting ? 'disabled' : ''}`}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Submitting...' : 'Submit'}
+                    </button>
                 </form>
             </div>
         </div>

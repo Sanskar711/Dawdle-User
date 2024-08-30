@@ -15,6 +15,7 @@ const BookMeeting = () => {
     const [isProspectModalOpen, setIsProspectModalOpen] = useState(false);
     const [isQualifyingModalOpen, setIsQualifyingModalOpen] = useState(false);
     const [useCases, setUseCases] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false); // State for submission status
     const navigate = useNavigate();
     const { productId } = useParams();
     const location = useLocation();
@@ -76,6 +77,14 @@ const BookMeeting = () => {
         }
     };
 
+    const handleNextClick = () => {
+        if (!selectedProspect && !prospectName) {
+            alert('Please select or provide a prospect name before proceeding.');
+        } else {
+            setIsProspectModalOpen(true);
+        }
+    };
+
     const handleProspectSubmit = async (details) => {
         setProspectDetails(details);
         if (selectedProspect) {
@@ -87,16 +96,13 @@ const BookMeeting = () => {
                 const newProspect = {
                     company_name: prospectName,
                     geography: details.geographicalLocation,
-                    is_valid: false
+                    is_approved: false
                 };
 
                 const response = await users.post(`/users/prospects/create/`, newProspect);
 
                 if (response.status === 201) {
                     setSelectedProspect(response.data.id); // Use the new prospect's ID
-                    const assignProspect = {
-                        product_prospects: [response.data.id]
-                    };
                     const response2 = await users.get(`/users/products/${productId}/add_prospect/${response.data.id}/`);
                     if (response2.status === 200) {
                         setIsProspectModalOpen(false);
@@ -113,9 +119,8 @@ const BookMeeting = () => {
     };
 
     const handleQualifyingSubmit = async (responses) => {
-        setIsQualifyingModalOpen(false);
+        setIsSubmitting(true); // Disable the button on submission
         const csrfToken = Cookies.get('csrftoken');
-        console.log(prospectDetails)
         try {
             const meetingData = {
                 prospect_id: selectedProspect || prospectDetails.prospectId,
@@ -129,10 +134,9 @@ const BookMeeting = () => {
                 poc_designation: prospectDetails.designation,
                 other_relevant_details: prospectDetails.additionalInfo,
                 product_id: productId,
-                use_cases : prospectDetails.useCases
-                
+                use_cases: prospectDetails.useCases
             };
-            console.log(meetingData)
+
             const response = await users.post('/users/meetings/create/', meetingData, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -171,6 +175,8 @@ const BookMeeting = () => {
         } catch (error) {
             console.error('Error scheduling meeting:', error);
             alert('There was an error scheduling the meeting. Please try again.');
+        } finally {
+            setIsSubmitting(false); // Re-enable the button after submission
         }
     };
 
@@ -214,7 +220,7 @@ const BookMeeting = () => {
                     </div>
                 </div>
 
-                <button className="next-button" onClick={() => setIsProspectModalOpen(true)}>
+                <button className="next-button" onClick={handleNextClick}>
                     Next
                 </button>
             </div>
@@ -233,6 +239,7 @@ const BookMeeting = () => {
                 onClose={() => setIsQualifyingModalOpen(false)}
                 onSave={handleQualifyingSubmit}
                 productId={productId}
+                isSubmitting={isSubmitting} // Pass the submission state
             />
         </>
     );
