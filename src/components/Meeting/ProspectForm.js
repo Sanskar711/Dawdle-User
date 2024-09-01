@@ -138,12 +138,13 @@ const ProspectDetailsModal = ({ isOpen, onClose, onNext, useCases, newProspect }
                                 required
                             >
                                 <option value="">Select Geography</option>
-                                <option value="North America">North America</option>
-                                <option value="Europe">Europe</option>
-                                <option value="Asia">Asia</option>
-                                <option value="South America">South America</option>
-                                <option value="Africa">Africa</option>
                                 <option value="Australia">Australia</option>
+                                <option value="Europe">Europe</option>
+                                <option value="India">India</option>
+                                <option value="LATAM">LATAM</option>
+                                <option value="Middle East">Middle East</option>
+                                <option value="South East Asia">South East Asia (SEA)</option>
+                                <option value="USA">USA</option>
                             </select>
                         </div>
                     )}
